@@ -46,12 +46,12 @@ development_status:
   1-3-containerization-docker-compose: done
   epic-1-retrospective: optional
 
-  epic-2: backlog
-  2-1-create-todo-api-endpoint: backlog
-  2-2-list-todos-api-endpoint: backlog
-  2-3-task-input-creation-ui: backlog
-  2-4-task-list-display: backlog
-  2-5-full-stack-task-creation-persistence-verification: backlog
+  epic-2: in-progress
+  2-1-create-todo-api-endpoint: ready-for-dev
+  2-2-list-todos-api-endpoint: ready-for-dev
+  2-3-task-input-creation-ui: ready-for-dev
+  2-4-task-list-display: ready-for-dev
+  2-5-full-stack-task-creation-persistence-verification: ready-for-dev
   epic-2-retrospective: optional
 
   epic-3: backlog
