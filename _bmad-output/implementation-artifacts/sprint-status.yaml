@@ -43,7 +43,7 @@ development_status:
   epic-1: in-progress
   1-1-project-scaffolding-development-environment: done
   1-2-database-setup-health-check-endpoint: done
-  1-3-containerization-docker-compose: ready-for-dev
+  1-3-containerization-docker-compose: done
   epic-1-retrospective: optional
 
   epic-2: backlog

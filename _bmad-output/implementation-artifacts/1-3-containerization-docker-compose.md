@@ -1,6 +1,6 @@
 # Story 1.3: Containerization & Docker Compose
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -20,34 +20,34 @@ so that the application can be started with a single `docker-compose up` command
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Create backend Dockerfile (AC: 1, 4)
-  - [ ] 1.1: Create `bmad-todo/backend/Dockerfile` — multi-stage: stage 1 (`node:22-alpine AS builder`) installs all deps and runs `npm run build`; stage 2 (`node:22-alpine`) installs only production deps, copies `dist/`, runs as non-root user (`node`), sets `CMD ["node", "dist/index.js"]`
-  - [ ] 1.2: Set `WORKDIR /app` in both stages, copy `package*.json` first for layer caching, then copy source/built files
-  - [ ] 1.3: Add health check instruction: `HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 CMD wget -qO- http://localhost:3001/api/health || exit 1`
-  - [ ] 1.4: Ensure non-root user: `USER node` in runtime stage
-- [ ] Task 2: Create frontend Dockerfile (AC: 2, 3)
-  - [ ] 2.1: Create `bmad-todo/frontend/Dockerfile` (if not exists — check first) — multi-stage: stage 1 (`node:22-alpine AS builder`) runs `npm run build` producing `dist/`; stage 2 (`nginx:alpine`) copies `dist/` to `/usr/share/nginx/html`
-  - [ ] 2.2: Copy custom `nginx.conf` into the Nginx image at `/etc/nginx/conf.d/default.conf`
-  - [ ] 2.3: Ensure non-root user in Nginx stage — Nginx alpine already runs worker processes as `nginx` user; verify or add explicit USER directive if needed
-- [ ] Task 3: Create Nginx configuration (AC: 3, 5)
-  - [ ] 3.1: Create `bmad-todo/frontend/nginx.conf` — serve static files from `/usr/share/nginx/html`, proxy `/api/` to `http://backend:3001` (Docker internal network hostname `backend`)
-  - [ ] 3.2: Configure `try_files $uri $uri/ /index.html` for SPA routing
-  - [ ] 3.3: Set `proxy_pass http://backend:3001;` with appropriate proxy headers (`proxy_set_header Host`, `X-Real-IP`, `X-Forwarded-For`)
-- [ ] Task 4: Create docker-compose.yml (AC: 1, 2, 4, 5, 7)
-  - [ ] 4.1: Create `bmad-todo/docker-compose.yml` — define `backend` service (build from `./backend`, port `3001:3001`, env vars from `.env`, volume `./data:/app/data`) and `frontend` service (build from `./frontend`, port `80:80`, depends_on `backend`)
-  - [ ] 4.2: Add named volume or bind mount `./data:/app/data` to backend service for SQLite persistence
-  - [ ] 4.3: Pass environment variables to backend: `DATABASE_PATH=/app/data/todos.db`, `PORT=3001`, `HOST=0.0.0.0`, `NODE_ENV=production`, `FRONTEND_URL=http://localhost`
-  - [ ] 4.4: Add `depends_on: backend` to frontend service so startup order is correct
-  - [ ] 4.5: Add `restart: unless-stopped` to both services
-- [ ] Task 5: Create/verify data directory and .gitkeep (AC: 4)
-  - [ ] 5.1: Ensure `bmad-todo/data/.gitkeep` exists (already in architecture spec — verify)
-  - [ ] 5.2: Ensure `bmad-todo/.gitignore` excludes `data/*.db` but keeps `data/.gitkeep`
-- [ ] Task 6: Update .env.example (AC: 6)
-  - [ ] 6.1: Verify `.env.example` documents all required variables: `PORT`, `HOST`, `DATABASE_PATH`, `NODE_ENV`, `FRONTEND_URL`
-- [ ] Task 7: Verify end-to-end Docker flow (AC: 1-7)
-  - [ ] 7.1: Run `docker-compose up --build` and confirm both containers start successfully
-  - [ ] 7.2: Confirm `GET http://localhost/api/health` returns `{ "status": "ok" }` through Nginx proxy
-  - [ ] 7.3: Confirm `docker-compose down && docker-compose up` preserves data (SQLite volume mount works)
+- [x] Task 1: Create backend Dockerfile (AC: 1, 4)
+  - [x] 1.1: Create `bmad-todo/backend/Dockerfile` — multi-stage: stage 1 (`node:22-alpine AS builder`) installs all deps and runs `npm run build`; stage 2 (`node:22-alpine`) installs only production deps, copies `dist/`, runs as non-root user (`node`), sets `CMD ["node", "dist/index.js"]`
+  - [x] 1.2: Set `WORKDIR /app` in both stages, copy `package*.json` first for layer caching, then copy source/built files
+  - [x] 1.3: Add health check instruction: `HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 CMD wget -qO- http://localhost:3001/api/health || exit 1`
+  - [x] 1.4: Ensure non-root user: `USER node` in runtime stage
+- [x] Task 2: Create frontend Dockerfile (AC: 2, 3)
+  - [x] 2.1: Create `bmad-todo/frontend/Dockerfile` — multi-stage: stage 1 (`node:22-alpine AS builder`) runs `npm run build` producing `dist/`; stage 2 (`nginx:alpine`) copies `dist/` to `/usr/share/nginx/html`
+  - [x] 2.2: Copy custom `nginx.conf` into the Nginx image at `/etc/nginx/conf.d/default.conf`
+  - [x] 2.3: Ensure non-root user in Nginx stage — Nginx alpine already runs worker processes as `nginx` user
+- [x] Task 3: Create Nginx configuration (AC: 3, 5)
+  - [x] 3.1: Create `bmad-todo/frontend/nginx.conf` — serve static files from `/usr/share/nginx/html`, proxy `/api/` to `http://backend:3001`
+  - [x] 3.2: Configure `try_files $uri $uri/ /index.html` for SPA routing
+  - [x] 3.3: Set `proxy_pass http://backend:3001;` with appropriate proxy headers
+- [x] Task 4: Create docker-compose.yml (AC: 1, 2, 4, 5, 7)
+  - [x] 4.1: Create `bmad-todo/docker-compose.yml` — monorepo-aware build context (root `.`) with per-package Dockerfiles
+  - [x] 4.2: Add bind mount `./data:/app/data` to backend service for SQLite persistence
+  - [x] 4.3: Pass environment variables to backend: `DATABASE_PATH=/app/data/todos.db`, `PORT=3001`, `HOST=0.0.0.0`, `NODE_ENV=production`, `FRONTEND_URL=http://localhost`
+  - [x] 4.4: Add `depends_on: backend` to frontend service
+  - [x] 4.5: Add `restart: unless-stopped` to both services
+- [x] Task 5: Create/verify data directory and .gitkeep (AC: 4)
+  - [x] 5.1: Ensure `bmad-todo/data/.gitkeep` exists
+  - [x] 5.2: Ensure `bmad-todo/.gitignore` excludes `data/*.db` but keeps `data/.gitkeep`
+- [x] Task 6: Update .env.example (AC: 6)
+  - [x] 6.1: Verified `.env.example` documents all required variables: `PORT`, `HOST`, `DATABASE_PATH`, `NODE_ENV`, `FRONTEND_URL`
+- [x] Task 7: Verify end-to-end Docker flow (AC: 1-7)
+  - [x] 7.1: `docker compose up -d` — both containers started successfully
+  - [x] 7.2: `curl http://localhost/api/health` returns `{"status":"ok"}` through Nginx proxy
+  - [x] 7.3: `docker compose down && docker compose up -d` — data persists (todos.db preserved via volume mount)
 
 ## Dev Notes
 
@@ -217,10 +217,30 @@ claude-sonnet-4-6
 
 ### Completion Notes List
 
+- Dockerfiles use monorepo-aware build context: root `package.json` + `package-lock.json` + all workspace `package.json` files copied, then `npm ci --workspace=<name>` used instead of plain `npm ci`
+- `docker-compose.yml` uses `context: .` (monorepo root) with `dockerfile: backend/Dockerfile` / `dockerfile: frontend/Dockerfile`
+- Fixed 3 pre-existing issues from Story 1.1 during Docker build: missing `app.css`, `vite.config.ts` import from `vitest/config`, monorepo-aware workspace npm ci
+- All 7 acceptance criteria verified: containers build, start, health check through Nginx, data persists across restarts
+- Code review fixes applied: data dir ownership for non-root user, EXPOSE 3001, X-Forwarded-Proto header, dockerignore data/ exclusion, gitignore data/* pattern
+
 ### File List
+
+| File | Action | Purpose |
+|------|--------|---------|
+| `bmad-todo/backend/Dockerfile` | Created | Multi-stage backend build (monorepo-aware) |
+| `bmad-todo/frontend/Dockerfile` | Created | Multi-stage frontend build → Nginx |
+| `bmad-todo/frontend/nginx.conf` | Created | SPA routing + API reverse proxy |
+| `bmad-todo/docker-compose.yml` | Created | Orchestrates backend + frontend containers |
+| `bmad-todo/.dockerignore` | Created | Excludes node_modules, dist, etc. from build context |
+| `bmad-todo/data/.gitkeep` | Created | Ensures data/ directory exists in git |
+| `bmad-todo/.gitignore` | Modified | Changed `data/` to `data/*.db` with `!data/.gitkeep` |
+| `bmad-todo/frontend/src/app.css` | Created | Missing Tailwind CSS import (Story 1.1 fix) |
+| `bmad-todo/frontend/vite.config.ts` | Modified | Import from `vitest/config` for tsc -b compatibility |
 
 ## Change Log
 
 | Date | Change |
 |------|--------|
 | 2026-03-06 | Story file created |
+| 2026-03-06 | All tasks implemented and verified, status → review |
+| 2026-03-06 | Code review: 1 HIGH, 4 MEDIUM, 1 LOW found — all fixed automatically |

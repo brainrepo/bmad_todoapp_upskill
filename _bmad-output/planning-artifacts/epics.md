@@ -259,6 +259,10 @@ So that I don't lose my tasks when I close the browser.
 **When** integration tests are run
 **Then** all create scenarios (valid, empty, whitespace, missing field) pass
 
+**Given** the endpoint is implemented
+**When** API contract validation is run via Postman MCP
+**Then** request/response schemas, status codes, and error contract match the architecture spec
+
 ### Story 2.2: List Todos API Endpoint
 
 As a user,
@@ -279,6 +283,10 @@ So that I can see everything I need to do when I open the app.
 **Given** the endpoint is implemented
 **When** integration tests are run
 **Then** list scenarios (populated, empty, ordering) pass
+
+**Given** the endpoint is implemented
+**When** API contract validation is run via Postman MCP
+**Then** response schema, status codes, and field naming (camelCase) match the architecture spec
 
 ### Story 2.3: Task Input & Creation UI
 
@@ -382,6 +390,10 @@ So that I can track what I've accomplished.
 **When** integration tests are run
 **Then** toggle scenarios (complete, uncomplete, not found) pass
 
+**Given** the endpoint is implemented
+**When** API contract validation is run via Postman MCP
+**Then** request/response schemas, status codes, and error contract match the architecture spec
+
 ### Story 3.2: Delete Todo API Endpoint
 
 As a user,
@@ -402,6 +414,10 @@ So that I can clean up tasks I no longer need.
 **Given** the endpoint is implemented
 **When** integration tests are run
 **Then** delete scenarios (success, not found) pass
+
+**Given** the endpoint is implemented
+**When** API contract validation is run via Postman MCP
+**Then** response status codes (204, 404) and error contract match the architecture spec
 
 ### Story 3.3: Task Completion Toggle UI
 
