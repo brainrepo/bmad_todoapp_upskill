@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Todo App — Design Direction Mockups</title>
+<style>
+  :root {
+    --bg: #141419;
+    --surface: #1c1c24;
+    --surface-hover: #24242e;
+    --text-primary: #e8e8ed;
+    --text-secondary: #6b6b7b;
+    --text-placeholder: #4a4a58;
+    --accent: #7c9cb5;
+    --error: #c4756e;
+    --border: #2a2a35;
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0c0c10;
+    color: var(--text-primary);
+    font-family: var(--font);
+    line-height: 1.5;
+  }
+
+  .showcase-header {
+    text-align: center;
+    padding: 48px 24px 32px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .showcase-header h1 {
+    font-size: 2rem;
+    font-weight: 300;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+
+  .showcase-header p {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .nav {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    padding: 16px 24px;
+    position: sticky;
+    top: 0;
+    background: #0c0c10;
+    z-index: 100;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+
+  .nav button {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: var(--font);
+    font-size: 0.8125rem;
+    transition: all 0.2s ease;
+  }
+
+  .nav button:hover,
+  .nav button.active {
+    background: var(--surface-hover);
+    color: var(--text-primary);
+    border-color: var(--accent);
+  }
+
+  .direction {
+    display: none;
+    min-height: 100vh;
+    padding: 48px 24px;
+  }
+
+  .direction.visible { display: block; }
+
+  .direction-label {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .direction-label h2 {
+    font-size: 1.25rem;
+    font-weight: 300;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+
+  .direction-label p {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+  }
+
+  .mockup-frame {
+    max-width: 720px;
+    margin: 0 auto;
+    background: var(--bg);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    min-height: 600px;
+  }
+
+  /* =================== DIRECTION 1: Stark Minimal =================== */
+  .d1 .app {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 80px 48px;
+  }
+
+  .d1 .app-title {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: var(--text-secondary);
+    margin-bottom: 48px;
+    letter-spacing: 0.02em;
+  }
+
+  .d1 .input-area {
+    margin-bottom: 32px;
+  }
+
+  .d1 .input-area input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-family: var(--font);
+    padding: 12px 0;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+
+  .d1 .input-area input:focus {
+    border-bottom-color: var(--accent);
+  }
+
+  .d1 .input-area input::placeholder {
+    color: var(--text-placeholder);
+  }
+
+  .d1 .todo-list {
+    list-style: none;
+  }
+
+  .d1 .todo-item {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+
+  .d1 .todo-item:hover {
+    color: var(--accent);
+  }
+
+  .d1 .todo-item.completed .todo-text {
+    color: var(--text-secondary);
+    text-decoration: line-through;
+  }
+
+  .d1 .todo-text {
+    font-size: 1rem;
+    font-weight: 400;
+  }
+
+  .d1 .todo-meta {
+    font-size: 0.75rem;
+    color: var(--text-placeholder);
+  }
+
+  .d1 .todo-delete {
+    opacity: 0;
+    color: var(--text-placeholder);
+    cursor: pointer;
+    font-size: 0.75rem;
+    transition: opacity 0.2s;
+    background: none;
+    border: none;
+    font-family: var(--font);
+  }
+
+  .d1 .todo-item:hover .todo-delete {
+    opacity: 1;
+  }
+
+  /* =================== DIRECTION 2: Notebook Lines =================== */
+  .d2 .app {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 64px 48px;
+  }
+
+  .d2 .app-title {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: var(--text-secondary);
+    margin-bottom: 40px;
+    text-align: center;
+    letter-spacing: 0.05em;
+    text-transform: lowercase;
+  }
+
+  .d2 .input-area {
+    margin-bottom: 24px;
+    position: relative;
+  }
+
+  .d2 .input-area input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-family: var(--font);
+    padding: 12px 16px;
+    outline: none;
+    background-image: repeating-linear-gradient(
+      transparent,
+      transparent 39px,
+      var(--border) 39px,
+      var(--border) 40px
+    );
+    background-position: 0 12px;
+    line-height: 40px;
+  }
+
+  .d2 .input-area input::placeholder {
+    color: var(--text-placeholder);
+  }
+
+  .d2 .todo-list {
+    list-style: none;
+    background-image: repeating-linear-gradient(
+      transparent,
+      transparent 39px,
+      var(--border) 39px,
+      var(--border) 40px
+    );
+  }
+
+  .d2 .todo-item {
+    padding: 8px 16px;
+    line-height: 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    height: 40px;
+  }
+
+  .d2 .todo-item:hover {
+    background: rgba(124, 156, 181, 0.04);
+  }
+
+  .d2 .todo-check {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    opacity: 0.6;
+  }
+
+  .d2 .todo-item.completed .todo-check {
+    opacity: 0.2;
+  }
+
+  .d2 .todo-item.completed .todo-text {
+    color: var(--text-secondary);
+    text-decoration: line-through;
+  }
+
+  .d2 .todo-text {
+    font-size: 1rem;
+    font-weight: 400;
+  }
+
+  /* =================== DIRECTION 3: Elevated Cards =================== */
+  .d3 .app {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 64px 48px;
+  }
+
+  .d3 .app-title {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: var(--text-primary);
+    margin-bottom: 32px;
+  }
+
+  .d3 .input-area {
+    margin-bottom: 24px;
+  }
+
+  .d3 .input-area input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-family: var(--font);
+    padding: 16px;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .d3 .input-area input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(124, 156, 181, 0.1);
+  }
+
+  .d3 .input-area input::placeholder {
+    color: var(--text-placeholder);
+  }
+
+  .d3 .todo-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .d3 .todo-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .d3 .todo-item:hover {
+    background: var(--surface-hover);
+    border-color: rgba(124, 156, 181, 0.2);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+
+  .d3 .todo-item.completed {
+    opacity: 0.5;
+  }
+
+  .d3 .todo-item.completed .todo-text {
+    text-decoration: line-through;
+    color: var(--text-secondary);
+  }
+
+  .d3 .todo-text {
+    font-size: 1rem;
+    font-weight: 400;
+  }
+
+  .d3 .todo-meta {
+    font-size: 0.75rem;
+    color: var(--text-placeholder);
+  }
+
+  .d3 .todo-delete {
+    background: none;
+    border: none;
+    color: var(--text-placeholder);
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-family: var(--font);
+    opacity: 0;
+    transition: opacity 0.15s;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+
+  .d3 .todo-item:hover .todo-delete {
+    opacity: 1;
+  }
+
+  .d3 .todo-delete:hover {
+    color: var(--error);
+    background: rgba(196, 117, 110, 0.1);
+  }
+
+  /* =================== DIRECTION 4: Dense & Functional =================== */
+  .d4 .app {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 48px 48px;
+  }
+
+  .d4 .top-bar {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .d4 .app-title {
+    font-size: 1.125rem;
+    font-weight: 400;
+    color: var(--text-primary);
+  }
+
+  .d4 .task-count {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+  }
+
+  .d4 .input-area {
+    margin-bottom: 16px;
+  }
+
+  .d4 .input-area input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    font-family: var(--font);
+    padding: 10px 12px;
+    outline: none;
+    border-radius: 4px;
+    transition: border-color 0.15s;
+  }
+
+  .d4 .input-area input:focus {
+    border-color: var(--accent);
+  }
+
+  .d4 .input-area input::placeholder {
+    color: var(--text-placeholder);
+  }
+
+  .d4 .todo-list {
+    list-style: none;
+  }
+
+  .d4 .todo-item {
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.15s;
+    font-size: 0.875rem;
+  }
+
+  .d4 .todo-item:hover {
+    background: var(--surface);
+  }
+
+  .d4 .todo-check {
+    width: 14px;
+    height: 14px;
+    border: 1.5px solid var(--text-placeholder);
+    border-radius: 3px;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+
+  .d4 .todo-item.completed .todo-check {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .d4 .todo-item.completed .todo-text {
+    color: var(--text-secondary);
+    text-decoration: line-through;
+  }
+
+  .d4 .todo-text { flex: 1; }
+
+  .d4 .todo-meta {
+    font-size: 0.6875rem;
+    color: var(--text-placeholder);
+  }
+
+  .d4 .todo-delete {
+    background: none;
+    border: none;
+    color: var(--text-placeholder);
+    cursor: pointer;
+    font-size: 0.6875rem;
+    opacity: 0;
+    transition: opacity 0.15s;
+    font-family: var(--font);
+  }
+
+  .d4 .todo-item:hover .todo-delete { opacity: 1; }
+
+  /* =================== DIRECTION 5: Bottom Input =================== */
+  .d5 .app {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 64px 48px;
+    min-height: 550px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .d5 .app-title {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: var(--text-secondary);
+    margin-bottom: 32px;
+  }
+
+  .d5 .todo-list {
+    list-style: none;
+    flex: 1;
+  }
+
+  .d5 .todo-item {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+
+  .d5 .todo-item:hover .todo-text {
+    color: var(--accent);
+  }
+
+  .d5 .todo-item.completed .todo-text {
+    color: var(--text-secondary);
+    text-decoration: line-through;
+  }
+
+  .d5 .todo-text {
+    font-size: 1rem;
+    font-weight: 400;
+  }
+
+  .d5 .todo-delete {
+    opacity: 0;
+    color: var(--text-placeholder);
+    cursor: pointer;
+    font-size: 0.75rem;
+    transition: opacity 0.2s;
+    background: none;
+    border: none;
+    font-family: var(--font);
+  }
+
+  .d5 .todo-item:hover .todo-delete { opacity: 1; }
+
+  .d5 .input-area {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  .d5 .input-area input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-family: var(--font);
+    padding: 12px 0;
+    outline: none;
+  }
+
+  .d5 .input-area input::placeholder {
+    color: var(--text-placeholder);
+  }
+
+  /* =================== DIRECTION 6: Typographic =================== */
+  .d6 .app {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 80px 48px;
+  }
+
+  .d6 .app-title {
+    font-size: 2rem;
+    font-weight: 200;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    letter-spacing: 0.04em;
+  }
+
+  .d6 .app-subtitle {
+    font-size: 0.8125rem;
+    color: var(--text-placeholder);
+    margin-bottom: 48px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .d6 .input-area {
+    margin-bottom: 40px;
+  }
+
+  .d6 .input-area input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-left: 2px solid var(--accent);
+    color: var(--text-primary);
+    font-size: 1.125rem;
+    font-family: var(--font);
+    font-weight: 300;
+    padding: 12px 20px;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+
+  .d6 .input-area input::placeholder {
+    color: var(--text-placeholder);
+    font-weight: 300;
+  }
+
+  .d6 .todo-list {
+    list-style: none;
+  }
+
+  .d6 .todo-item {
+    padding: 16px 0 16px 20px;
+    border-left: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+  }
+
+  .d6 .todo-item:hover {
+    border-left-color: var(--border);
+  }
+
+  .d6 .todo-item.completed .todo-text {
+    color: var(--text-secondary);
+    text-decoration: line-through;
+    font-style: italic;
+  }
+
+  .d6 .todo-text {
+    font-size: 1.125rem;
+    font-weight: 300;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .d6 .todo-meta {
+    font-size: 0.6875rem;
+    color: var(--text-placeholder);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .d6 .todo-delete {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    color: var(--text-placeholder);
+    cursor: pointer;
+    font-size: 0.75rem;
+    transition: opacity 0.2s;
+    background: none;
+    border: none;
+    font-family: var(--font);
+  }
+
+  .d6 .todo-item:hover .todo-delete { opacity: 1; }
+
+  /* =================== Empty states =================== */
+  .empty-state {
+    text-align: center;
+    padding: 48px 0;
+    color: var(--text-placeholder);
+  }
+
+  .empty-state h3 {
+    font-weight: 300;
+    font-size: 1.25rem;
+    margin-bottom: 8px;
+    color: var(--text-secondary);
+  }
+
+  .empty-state p {
+    font-size: 0.875rem;
+  }
+
+  /* =================== Comparison View =================== */
+  .comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 48px 24px;
+  }
+
+  .comparison .mockup-frame {
+    min-height: 500px;
+  }
+
+  @media (max-width: 900px) {
+    .comparison {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .annotation {
+    margin-top: 24px;
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+
+  .annotation h3 {
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .annotation ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .annotation li {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    padding-left: 16px;
+    position: relative;
+  }
+
+  .annotation li::before {
+    content: '·';
+    position: absolute;
+    left: 4px;
+    color: var(--text-placeholder);
+  }
+</style>
+</head>
+<body>
+
+<div class="showcase-header">
+  <h1>Design Direction Mockups</h1>
+  <p>Six visual approaches for the Todo app. Same color palette, same type scale — different layout, density, and interaction character.</p>
+</div>
+
+<nav class="nav">
+  <button class="active" onclick="show('d1')">1 — Stark Minimal</button>
+  <button onclick="show('d2')">2 — Notebook Lines</button>
+  <button onclick="show('d3')">3 — Elevated Cards</button>
+  <button onclick="show('d4')">4 — Dense & Functional</button>
+  <button onclick="show('d5')">5 — Bottom Input</button>
+  <button onclick="show('d6')">6 — Typographic</button>
+  <button onclick="show('compare')">Compare</button>
+</nav>
+
+<!-- =================== DIRECTION 1 =================== -->
+<div id="d1" class="direction visible">
+  <div class="direction-label">
+    <h2>Direction 1 — Stark Minimal</h2>
+    <p>Underline input, no surface elements, maximum negative space. Every pixel earns its place.</p>
+  </div>
+
+  <div class="mockup-frame d1">
+    <div class="app">
+      <div class="app-title">things to do</div>
+      <div class="input-area">
+        <input type="text" placeholder="What needs doing?" autofocus>
+      </div>
+      <ul class="todo-list">
+        <li class="todo-item">
+          <span class="todo-text">Research flight options to Lisbon</span>
+          <button class="todo-delete">remove</button>
+        </li>
+        <li class="todo-item">
+          <span class="todo-text">Buy new sketchbook — Moleskine A5</span>
+          <button class="todo-delete">remove</button>
+        </li>
+        <li class="todo-item completed">
+          <span class="todo-text">Send project proposal to Elena</span>
+          <button class="todo-delete">remove</button>
+        </li>
+        <li class="todo-item">
+          <span class="todo-text">Schedule dentist appointment</span>
+          <button class="todo-delete">remove</button>
+        </li>
+        <li class="todo-item completed">
+          <span class="todo-text">Update portfolio site</span>
+          <button class="todo-delete">remove</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="annotation">
+    <h3>Design Character</h3>
+    <ul>
+      <li>Underline-only input — dissolves into the page when empty</li>
+      <li>No background surfaces, no cards — just text and lines</li>
+      <li>Delete action revealed on hover as text ("remove"), not an icon</li>
+      <li>Completed items dimmed inline with strikethrough</li>
+      <li>Maximum reliance on negative space for hierarchy</li>
+    </ul>
+  </div>
+</div>
+
+<!-- =================== DIRECTION 2 =================== -->
+<div id="d2" class="direction">
+  <div class="direction-label">
+    <h2>Direction 2 — Notebook Lines</h2>
+    <p>Ruled-line background evokes the physical notepad. Tasks sit on lines like handwriting.</p>
+  </div>
+
+  <div class="mockup-frame d2">
+    <div class="app">
+      <div class="app-title">things to do</div>
+      <div class="input-area">
+        <input type="text" placeholder="Write something down...">
+      </div>
+      <ul class="todo-list">
+        <li class="todo-item">
+          <span class="todo-check"></span>
+          <span class="todo-text">Research flight options to Lisbon</span>
+        </li>
+        <li class="todo-item">
+          <span class="todo-check"></span>
+          <span class="todo-text">Buy new sketchbook — Moleskine A5</span>
+        </li>
+        <li class="todo-item completed">
+          <span class="todo-check"></span>
+          <span class="todo-text">Send project proposal to Elena</span>
+        </li>
+        <li class="todo-item">
+          <span class="todo-check"></span>
+          <span class="todo-text">Schedule dentist appointment</span>
+        </li>
+        <li class="todo-item completed">
+          <span class="todo-check"></span>
+          <span class="todo-text">Update portfolio site</span>
+        </li>
+        <li class="todo-item">
+          <span class="todo-check"></span>
+          <span class="todo-text">Read chapter 4 of Design of Everyday Things</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="annotation">
+    <h3>Design Character</h3>
+    <ul>
+      <li>Repeating horizontal lines create a ruled-notebook feel</li>
+      <li>Small dot indicators instead of checkboxes — less visual noise</li>
+      <li>Tasks aligned to the ruled grid like handwritten notes</li>
+      <li>Centered title with letter-spacing for a cover-page feel</li>
+      <li>Most literal interpretation of the Moleskine mental model</li>
+    </ul>
+  </div>
+</div>
+
+<!-- =================== DIRECTION 3 =================== -->
+<div id="d3" class="direction">
+  <div class="direction-label">
+    <h2>Direction 3 — Elevated Cards</h2>
+    <p>Each task is a distinct card with subtle depth. More tactile, more structured.</p>
+  </div>
+
+  <div class="mockup-frame d3">
+    <div class="app">
+      <div class="app-title">things to do</div>
+      <div class="input-area">
+        <input type="text" placeholder="What needs doing?">
+      </div>
+      <ul class="todo-list">
+        <li class="todo-item">
+          <div>
+            <span class="todo-text">Research flight options to Lisbon</span>
+            <div class="todo-meta">just now</div>
+          </div>
+          <button class="todo-delete">×</button>
+        </li>
+        <li class="todo-item">
+          <div>
+            <span class="todo-text">Buy new sketchbook — Moleskine A5</span>
+            <div class="todo-meta">2 hours ago</div>
+          </div>
+          <button class="todo-delete">×</button>
+        </li>
+        <li class="todo-item completed">
+          <div>
+            <span class="todo-text">Send project proposal to Elena</span>
+            <div class="todo-meta">yesterday</div>
+          </div>
+          <button class="todo-delete">×</button>
+        </li>
+        <li class="todo-item">
+          <div>
+            <span class="todo-text">Schedule dentist appointment</span>
+            <div class="todo-meta">yesterday</div>
+          </div>
+          <button class="todo-delete">×</button>
+        </li>
+        <li class="todo-item completed">
+          <div>
+            <span class="todo-text">Update portfolio site</span>
+            <div class="todo-meta">3 days ago</div>
+          </div>
+          <button class="todo-delete">×</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="annotation">
+    <h3>Design Character</h3>
+    <ul>
+      <li>Each task is a distinct card with border, border-radius, and surface color</li>
+      <li>Hover lifts the card with translateY and shadow — tactile feel</li>
+      <li>Gap between cards (8px) creates clear separation</li>
+      <li>Timestamps visible — adds context without clutter</li>
+      <li>More structured feel — each task feels like a discrete object</li>
+    </ul>
+  </div>
+</div>
+
+<!-- =================== DIRECTION 4 =================== -->
+<div id="d4" class="direction">
+  <div class="direction-label">
+    <h2>Direction 4 — Dense & Functional</h2>
+    <p>Compact layout with checkboxes and task count. Efficient, tool-like, no wasted space.</p>
+  </div>
+
+  <div class="mockup-frame d4">
+    <div class="app">
+      <div class="top-bar">
+        <span class="app-title">tasks</span>
+        <span class="task-count">3 remaining · 2 done</span>
+      </div>
+      <div class="input-area">
+        <input type="text" placeholder="Add a task...">
+      </div>
+      <ul class="todo-list">
+        <li class="todo-item">
+          <span class="todo-check"></span>
+          <span class="todo-text">Research flight options to Lisbon</span>
+          <span class="todo-meta">now</span>
+          <button class="todo-delete">×</button>
+        </li>
+        <li class="todo-item">
+          <span class="todo-check"></span>
+          <span class="todo-text">Buy new sketchbook — Moleskine A5</span>
+          <span class="todo-meta">2h</span>
+          <button class="todo-delete">×</button>
+        </li>
+        <li class="todo-item completed">
+          <span class="todo-check"></span>
+          <span class="todo-text">Send project proposal to Elena</span>
+          <span class="todo-meta">1d</span>
+          <button class="todo-delete">×</button>
+        </li>
+        <li class="todo-item">
+          <span class="todo-check"></span>
+          <span class="todo-text">Schedule dentist appointment</span>
+          <span class="todo-meta">1d</span>
+          <button class="todo-delete">×</button>
+        </li>
+        <li class="todo-item completed">
+          <span class="todo-check"></span>
+          <span class="todo-text">Update portfolio site</span>
+          <span class="todo-meta">3d</span>
+          <button class="todo-delete">×</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="annotation">
+    <h3>Design Character</h3>
+    <ul>
+      <li>Smaller font size (14px) — fits more tasks in viewport</li>
+      <li>Checkbox squares — explicit completion affordance</li>
+      <li>Task count in header provides context at a glance</li>
+      <li>Abbreviated timestamps save horizontal space</li>
+      <li>Hover reveals row background rather than text color change</li>
+      <li>Feels tool-like — efficiency over elegance</li>
+    </ul>
+  </div>
+</div>
+
+<!-- =================== DIRECTION 5 =================== -->
+<div id="d5" class="direction">
+  <div class="direction-label">
+    <h2>Direction 5 — Bottom Input</h2>
+    <p>Input anchored to the bottom. The list is the hero — you add to it from below.</p>
+  </div>
+
+  <div class="mockup-frame d5">
+    <div class="app">
+      <div class="app-title">things to do</div>
+      <ul class="todo-list">
+        <li class="todo-item">
+          <span class="todo-text">Research flight options to Lisbon</span>
+          <button class="todo-delete">×</button>
+        </li>
+        <li class="todo-item">
+          <span class="todo-text">Buy new sketchbook — Moleskine A5</span>
+          <button class="todo-delete">×</button>
+        </li>
+        <li class="todo-item completed">
+          <span class="todo-text">Send project proposal to Elena</span>
+          <button class="todo-delete">×</button>
+        </li>
+        <li class="todo-item">
+          <span class="todo-text">Schedule dentist appointment</span>
+          <button class="todo-delete">×</button>
+        </li>
+        <li class="todo-item completed">
+          <span class="todo-text">Update portfolio site</span>
+          <button class="todo-delete">×</button>
+        </li>
+      </ul>
+      <div class="input-area">
+        <input type="text" placeholder="What needs doing?">
+      </div>
+    </div>
+  </div>
+
+  <div class="annotation">
+    <h3>Design Character</h3>
+    <ul>
+      <li>Input at the bottom — like adding a line at the end of a notebook page</li>
+      <li>The existing list dominates the view — new tasks feel like additions</li>
+      <li>Mimics chat/messaging mental model — familiar pattern</li>
+      <li>Title and list are first things you see — input is secondary</li>
+      <li>Same stark aesthetic as Direction 1 but with reversed spatial hierarchy</li>
+    </ul>
+  </div>
+</div>
+
+<!-- =================== DIRECTION 6 =================== -->
+<div id="d6" class="direction">
+  <div class="direction-label">
+    <h2>Direction 6 — Typographic</h2>
+    <p>Editorial, magazine-like. Left accent bar, larger text, italic completions. Type as art.</p>
+  </div>
+
+  <div class="mockup-frame d6">
+    <div class="app">
+      <div class="app-title">things to do</div>
+      <div class="app-subtitle">a simple list</div>
+      <div class="input-area">
+        <input type="text" placeholder="What needs doing?">
+      </div>
+      <ul class="todo-list">
+        <li class="todo-item">
+          <span class="todo-text">Research flight options to Lisbon</span>
+          <span class="todo-meta">just now</span>
+          <button class="todo-delete">×</button>
+        </li>
+        <li class="todo-item">
+          <span class="todo-text">Buy new sketchbook — Moleskine A5</span>
+          <span class="todo-meta">2 hours ago</span>
+          <button class="todo-delete">×</button>
+        </li>
+        <li class="todo-item completed">
+          <span class="todo-text">Send project proposal to Elena</span>
+          <span class="todo-meta">yesterday</span>
+          <button class="todo-delete">×</button>
+        </li>
+        <li class="todo-item">
+          <span class="todo-text">Schedule dentist appointment</span>
+          <span class="todo-meta">yesterday</span>
+          <button class="todo-delete">×</button>
+        </li>
+        <li class="todo-item completed">
+          <span class="todo-text">Update portfolio site</span>
+          <span class="todo-meta">3 days ago</span>
+          <button class="todo-delete">×</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="annotation">
+    <h3>Design Character</h3>
+    <ul>
+      <li>Left accent bar on input — editorial marker, draws the eye</li>
+      <li>Larger text (18px) with light weight (300) — elegant, readable</li>
+      <li>Completed tasks use italic + strikethrough — not just dimmed</li>
+      <li>Hover reveals left border on each item — subtle interactive cue</li>
+      <li>Subtitle adds personality — "a simple list"</li>
+      <li>Uppercase metadata with letter-spacing — magazine typography</li>
+      <li>Most editorial, least tool-like direction</li>
+    </ul>
+  </div>
+</div>
+
+<!-- =================== COMPARISON VIEW =================== -->
+<div id="compare" class="direction">
+  <div class="direction-label">
+    <h2>Side-by-Side Comparison</h2>
+    <p>Compare any two directions. Same content, different visual treatment.</p>
+  </div>
+
+  <div class="comparison">
+    <div>
+      <div style="text-align:center;margin-bottom:12px;color:var(--text-secondary);font-size:0.8125rem;">Direction 1 — Stark Minimal</div>
+      <div class="mockup-frame d1">
+        <div class="app">
+          <div class="app-title">things to do</div>
+          <div class="input-area">
+            <input type="text" placeholder="What needs doing?">
+          </div>
+          <ul class="todo-list">
+            <li class="todo-item"><span class="todo-text">Research flight options to Lisbon</span></li>
+            <li class="todo-item"><span class="todo-text">Buy new sketchbook</span></li>
+            <li class="todo-item completed"><span class="todo-text">Send project proposal</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div style="text-align:center;margin-bottom:12px;color:var(--text-secondary);font-size:0.8125rem;">Direction 6 — Typographic</div>
+      <div class="mockup-frame d6">
+        <div class="app">
+          <div class="app-title">things to do</div>
+          <div class="app-subtitle">a simple list</div>
+          <div class="input-area">
+            <input type="text" placeholder="What needs doing?">
+          </div>
+          <ul class="todo-list">
+            <li class="todo-item"><span class="todo-text">Research flight options to Lisbon</span><span class="todo-meta">just now</span></li>
+            <li class="todo-item"><span class="todo-text">Buy new sketchbook</span><span class="todo-meta">2h ago</span></li>
+            <li class="todo-item completed"><span class="todo-text">Send project proposal</span><span class="todo-meta">1d ago</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div style="text-align:center;margin-bottom:12px;color:var(--text-secondary);font-size:0.8125rem;">Direction 2 — Notebook Lines</div>
+      <div class="mockup-frame d2">
+        <div class="app">
+          <div class="app-title">things to do</div>
+          <div class="input-area">
+            <input type="text" placeholder="Write something down...">
+          </div>
+          <ul class="todo-list">
+            <li class="todo-item"><span class="todo-check"></span><span class="todo-text">Research flight options to Lisbon</span></li>
+            <li class="todo-item"><span class="todo-check"></span><span class="todo-text">Buy new sketchbook</span></li>
+            <li class="todo-item completed"><span class="todo-check"></span><span class="todo-text">Send project proposal</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div style="text-align:center;margin-bottom:12px;color:var(--text-secondary);font-size:0.8125rem;">Direction 3 — Elevated Cards</div>
+      <div class="mockup-frame d3">
+        <div class="app">
+          <div class="app-title">things to do</div>
+          <div class="input-area">
+            <input type="text" placeholder="What needs doing?">
+          </div>
+          <ul class="todo-list">
+            <li class="todo-item"><div><span class="todo-text">Research flight options to Lisbon</span><div class="todo-meta">just now</div></div></li>
+            <li class="todo-item"><div><span class="todo-text">Buy new sketchbook</span><div class="todo-meta">2h ago</div></div></li>
+            <li class="todo-item completed"><div><span class="todo-text">Send project proposal</span><div class="todo-meta">1d ago</div></div></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function show(id) {
+    document.querySelectorAll('.direction').forEach(d => d.classList.remove('visible'));
+    document.getElementById(id).classList.add('visible');
+    document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+  }
+</script>
+
+</body>
+</html>
