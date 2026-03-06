@@ -4,6 +4,7 @@ import helmetPlugin from './plugins/helmet.js'
 import sensiblePlugin from './plugins/sensible.js'
 import databasePlugin from './plugins/database.js'
 import healthRoutes from './routes/health.js'
+import todoRoutes from './routes/todos.js'
 
 export function buildServer(opts: FastifyServerOptions = {}) {
   const server = Fastify(opts)
@@ -14,6 +15,7 @@ export function buildServer(opts: FastifyServerOptions = {}) {
   server.register(databasePlugin)
 
   server.register(healthRoutes)
+  server.register(todoRoutes)
 
   return server
 }

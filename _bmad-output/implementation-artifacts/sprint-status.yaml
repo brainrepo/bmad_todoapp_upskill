@@ -47,7 +47,7 @@ development_status:
   epic-1-retrospective: optional
 
   epic-2: in-progress
-  2-1-create-todo-api-endpoint: ready-for-dev
+  2-1-create-todo-api-endpoint: done
   2-2-list-todos-api-endpoint: ready-for-dev
   2-3-task-input-creation-ui: ready-for-dev
   2-4-task-list-display: ready-for-dev
