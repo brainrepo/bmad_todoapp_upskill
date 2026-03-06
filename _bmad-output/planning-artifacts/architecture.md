@@ -217,7 +217,7 @@ bmad-todo/
 ### Data Architecture
 
 - **Database:** SQLite via `better-sqlite3` v12.6.x — file-based, in-process, zero-config
-- **Data Access:** Raw SQL through `@punkish/fastify-better-sqlite3` Fastify plugin — no ORM abstraction
+- **Data Access:** Raw SQL via a hand-written `fastify-plugin` wrapper around `better-sqlite3` — no ORM abstraction. `@punkish/fastify-better-sqlite3` was evaluated but not used; the custom plugin (`src/plugins/database.ts`) gives direct control over schema init, WAL mode, and the `onClose` lifecycle hook.
 - **Schema:** Single `todos` table: `id` (INTEGER PRIMARY KEY), `text` (TEXT NOT NULL), `completed` (INTEGER DEFAULT 0), `created_at` (TEXT DEFAULT CURRENT_TIMESTAMP)
 - **Persistence:** SQLite file stored at `/app/data/todos.db`, Docker volume-mounted for container restarts
 - **Migration:** Simple schema initialization on first boot — single table, no migration tool needed for MVP
@@ -343,10 +343,15 @@ frontend/src/
 │       └── TodoItem.test.tsx
 
 backend/src/
+├── plugins/
+│   └── database.ts
 ├── routes/
 │   └── todos.ts
 ├── __tests__/
+│   ├── plugins/
+│   │   └── database.test.ts
 │   └── routes/
+│       ├── health.test.ts
 │       └── todos.test.ts
 ```
 
