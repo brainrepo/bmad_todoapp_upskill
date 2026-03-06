@@ -419,7 +419,7 @@ const mutation = useMutation({
 - TanStack Query `onError` callbacks per mutation for optimistic rollback
 - Non-disruptive inline error notification (simple React state + Tailwind-styled component, no library)
 - Error messages are user-friendly, never technical — "Couldn't save your task. Please try again."
-- Errors auto-dismiss after ~5 seconds or on user dismiss
+- Errors auto-dismiss after 4 seconds or on user dismiss
 
 **Error Notification Component Pattern:**
 - Positioned top-right
