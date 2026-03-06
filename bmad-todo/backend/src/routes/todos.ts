@@ -1,6 +1,11 @@
 import type { FastifyInstance } from 'fastify'
-import { createTodoBodySchema, createTodoResponseSchema, errorResponseSchema } from '../schemas/todos.js'
-import { createTodo } from '../services/todos.js'
+import {
+  createTodoBodySchema,
+  createTodoResponseSchema,
+  errorResponseSchema,
+  listTodosResponseSchema,
+} from '../schemas/todos.js'
+import { createTodo, getAllTodos } from '../services/todos.js'
 
 export default async function todoRoutes(server: FastifyInstance) {
   server.post(
@@ -24,6 +29,20 @@ export default async function todoRoutes(server: FastifyInstance) {
 
       const todo = createTodo(server.db, trimmedText)
       return reply.status(201).send(todo)
+    },
+  )
+
+  server.get(
+    '/api/todos',
+    {
+      schema: {
+        response: {
+          200: listTodosResponseSchema,
+        },
+      },
+    },
+    async () => {
+      return getAllTodos(server.db)
     },
   )
 }

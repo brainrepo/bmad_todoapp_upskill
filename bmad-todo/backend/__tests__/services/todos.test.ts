@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import { buildServer } from '../../src/server.js'
-import { createTodo } from '../../src/services/todos.js'
+import { createTodo, getAllTodos } from '../../src/services/todos.js'
 
 describe('TodoService', () => {
   const server = buildServer({ logger: false })
@@ -42,5 +42,39 @@ describe('TodoService', () => {
     const result = createTodo(server.db, 'Timestamped todo')
     expect(result.createdAt).toBeDefined()
     expect(result.createdAt.length).toBeGreaterThan(0)
+  })
+})
+
+describe('TodoService - getAllTodos', () => {
+  const server = buildServer({ logger: false })
+
+  beforeAll(async () => {
+    await server.ready()
+  })
+
+  afterAll(async () => {
+    await server.close()
+  })
+
+  it('returns empty array when no todos exist', () => {
+    const result = getAllTodos(server.db)
+    expect(result).toEqual([])
+  })
+
+  it('returns all todos with camelCase mapping', () => {
+    createTodo(server.db, 'First')
+    createTodo(server.db, 'Second')
+
+    const result = getAllTodos(server.db)
+    expect(result).toHaveLength(2)
+    expect(result[0]).toHaveProperty('createdAt')
+    expect(result[0]).not.toHaveProperty('created_at')
+    expect(typeof result[0].completed).toBe('boolean')
+  })
+
+  it('returns todos ordered by created_at ascending', () => {
+    const result = getAllTodos(server.db)
+    expect(result[0].text).toBe('First')
+    expect(result[1].text).toBe('Second')
   })
 })

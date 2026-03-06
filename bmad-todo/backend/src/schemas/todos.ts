@@ -18,6 +18,11 @@ export const createTodoResponseSchema = {
   },
 } as const
 
+export const listTodosResponseSchema = {
+  type: 'array',
+  items: createTodoResponseSchema,
+} as const
+
 export const errorResponseSchema = {
   type: 'object',
   required: ['statusCode', 'error', 'message'],
