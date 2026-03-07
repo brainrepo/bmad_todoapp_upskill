@@ -183,10 +183,11 @@ bmad-todo/
 - Postman MCP for API contract validation
 
 **QA Integration:**
-- Test coverage analysis targeting 70% minimum meaningful coverage
+- Test coverage analysis targeting 70% minimum meaningful coverage — output to `qa-reports/coverage/`
 - Performance testing via Chrome DevTools MCP
-- Accessibility audits via Lighthouse/axe-core automated through Playwright
-- AI-assisted security review for XSS, injection patterns
+- Accessibility audits via Lighthouse/axe-core automated through Playwright — output to `qa-reports/accessibility/`
+- AI-assisted security review for XSS, injection patterns — output to `qa-reports/security/`
+- All QA report artifacts stored in `bmad-todo/qa-reports/` (gitignored, regenerated on demand)
 
 **Note:** Project initialization using these commands should be the first implementation story.
 
@@ -550,6 +551,11 @@ bmad-todo/
 │   │   └── journey-edge-cases.spec.ts         # Journey 3: errors, validation, loading
 │   └── fixtures/
 │       └── test-helpers.ts
+│
+├── qa-reports/                           # QA output artifacts (gitignored except templates)
+│   ├── coverage/                         # Test coverage reports (Vitest c8/istanbul output)
+│   ├── accessibility/                    # WCAG audit results (axe-core/Lighthouse)
+│   └── security/                         # Security review findings
 │
 └── data/                                 # SQLite database (Docker volume mount, gitignored)
     └── .gitkeep

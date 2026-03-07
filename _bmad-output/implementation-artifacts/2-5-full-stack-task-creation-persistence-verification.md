@@ -1,6 +1,6 @@
 # Story 2.5: Full-Stack Task Creation & Persistence Verification
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -24,34 +24,34 @@ So that I can trust the app with my task list.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Create first-time user journey E2E test (AC: #1, #3)
-  - [ ] 1.1: Create `e2e/tests/journey-first-time-user.spec.ts`
-  - [ ] 1.2: Test: user opens app, input is auto-focused
-  - [ ] 1.3: Test: user types "Buy groceries" and presses Enter
-  - [ ] 1.4: Test: task appears in the list
-  - [ ] 1.5: Test: input is cleared and retains focus
-  - [ ] 1.6: Test: page refresh — task "Buy groceries" is still visible
-  - [ ] 1.7: Test: task displays creation timestamp metadata
+- [x] Task 1: Create first-time user journey E2E test (AC: #1, #3)
+  - [x] 1.1: Create `e2e/tests/journey-first-time-user.spec.ts`
+  - [x] 1.2: Test: user opens app, input is auto-focused
+  - [x] 1.3: Test: user types "Buy groceries" and presses Enter
+  - [x] 1.4: Test: task appears in the list
+  - [x] 1.5: Test: input is cleared and retains focus
+  - [x] 1.6: Test: page refresh — task "Buy groceries" is still visible
+  - [x] 1.7: Test: task displays creation timestamp metadata
 
-- [ ] Task 2: Create persistence verification tests (AC: #2)
-  - [ ] 2.1: Test: create 3 tasks sequentially ("Task 1", "Task 2", "Task 3")
-  - [ ] 2.2: Test: verify all 3 tasks are displayed in creation order
-  - [ ] 2.3: Test: reload page — all 3 tasks still visible in same order
-  - [ ] 2.4: Test: close and reopen page context — all 3 tasks persist
+- [x] Task 2: Create persistence verification tests (AC: #2)
+  - [x] 2.1: Test: create 3 tasks sequentially ("Task 1", "Task 2", "Task 3")
+  - [x] 2.2: Test: verify all 3 tasks are displayed in creation order
+  - [x] 2.3: Test: reload page — all 3 tasks still visible in same order
+  - [x] 2.4: Test: close and reopen page context — all 3 tasks persist
 
-- [ ] Task 3: Create input validation E2E tests (AC: #3)
-  - [ ] 3.1: Test: pressing Enter with empty input does nothing (no new task)
-  - [ ] 3.2: Test: pressing Enter with whitespace-only input does nothing
-  - [ ] 3.3: Test: text is trimmed — leading/trailing spaces removed from created task
+- [x] Task 3: Create input validation E2E tests (AC: #3)
+  - [x] 3.1: Test: pressing Enter with empty input does nothing (no new task)
+  - [x] 3.2: Test: pressing Enter with whitespace-only input does nothing
+  - [x] 3.3: Test: text is trimmed — leading/trailing spaces removed from created task
 
-- [ ] Task 4: Add additional test helpers if needed
-  - [ ] 4.1: Extend `e2e/fixtures/test-helpers.ts` with helpers for verifying todo list content
-  - [ ] 4.2: Add helper to count visible todos
-  - [ ] 4.3: Add helper to verify todo text at specific position
+- [x] Task 4: Add additional test helpers if needed
+  - [x] 4.1: Extend `e2e/fixtures/test-helpers.ts` with helpers for verifying todo list content
+  - [x] 4.2: Add helper to count visible todos
+  - [x] 4.3: Add helper to verify todo text at specific position
 
-- [ ] Task 5: Verify full-stack integration manually
-  - [ ] 5.1: Run `npm run dev` and manually verify the complete flow
-  - [ ] 5.2: Verify Docker Compose build still works with all new code (`npm run docker:up`)
+- [x] Task 5: Verify full-stack integration manually
+  - [x] 5.1: Run `npm run dev` and manually verify the complete flow
+  - [x] 5.2: Verify Docker Compose build still works with all new code (`npm run docker:up`)
 
 ## Dev Notes
 
@@ -356,4 +356,20 @@ This story focuses on the **happy path**: create → display → persist → ver
 
 ### Completion Notes List
 
+- 9 E2E Playwright tests written and passing across 3 test describe blocks
+- Journey 1 tests: auto-focus, task creation, timestamp metadata, page refresh persistence (4 tests)
+- Persistence tests: multiple tasks in order after reload, context close/reopen survival (2 tests)
+- Input validation tests: empty input, whitespace-only, text trimming (3 tests)
+- Used unique text per test (uniqueText helper) to avoid database state collisions across parallel runs
+- Used waitForResponse pattern correctly: set up listener BEFORE triggering action
+- Added 3 test helpers: getTodoCount, getTodoTextAtPosition, expectTodoVisible
+- All 34 frontend unit tests pass, all 24 backend unit tests pass, 9 E2E tests pass (67 total)
+- Full-stack dev servers verified running and healthy
+
 ### File List
+
+**Created:**
+- `bmad-todo/e2e/tests/journey-first-time-user.spec.ts`
+
+**Modified:**
+- `bmad-todo/e2e/fixtures/test-helpers.ts` — added getTodoCount, getTodoTextAtPosition, expectTodoVisible helpers
