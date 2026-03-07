@@ -1,6 +1,6 @@
 # Story 2.3: Task Input & Creation UI
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -34,47 +34,47 @@ So that I can capture thoughts as fast as I can type them.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Define Tailwind design system tokens (AC: #1)
-  - [ ] 1.1: Add `@theme` block to `frontend/src/app.css` with all color tokens from UX spec (`bg`, `surface`, `surface-hover`, `text-primary`, `text-secondary`, `text-placeholder`, `accent`, `error`, `border`)
-  - [ ] 1.2: Verify existing App.tsx classes (`bg-bg`, `text-text-primary`, `text-text-placeholder`) work with the new theme definition
-  - [ ] 1.3: Verify color contrast ratios meet WCAG AA (already validated in UX spec)
+- [x] Task 1: Define Tailwind design system tokens (AC: #1)
+  - [x] 1.1: Add `@theme` block to `frontend/src/app.css` with all color tokens from UX spec (`bg`, `surface`, `surface-hover`, `text-primary`, `text-secondary`, `text-placeholder`, `accent`, `error`, `border`)
+  - [x] 1.2: Verify existing App.tsx classes (`bg-bg`, `text-text-primary`, `text-text-placeholder`) work with the new theme definition
+  - [x] 1.3: Verify color contrast ratios meet WCAG AA (already validated in UX spec)
 
-- [ ] Task 2: Create API client layer (AC: #2)
-  - [ ] 2.1: Create `frontend/src/api/todos.ts` with `createTodo(text: string)` fetch wrapper
-  - [ ] 2.2: Use `API_BASE_URL` from `constants.ts` for endpoint URL
-  - [ ] 2.3: Handle POST to `/api/todos` with JSON body `{ text }`, expect 201 response
-  - [ ] 2.4: Parse and return response as `Todo` type
-  - [ ] 2.5: Write unit tests in `frontend/src/__tests__/api/todos.test.ts`
+- [x] Task 2: Create API client layer (AC: #2)
+  - [x] 2.1: Create `frontend/src/api/todos.ts` with `createTodo(text: string)` fetch wrapper
+  - [x] 2.2: Use `API_BASE_URL` from `constants.ts` for endpoint URL
+  - [x] 2.3: Handle POST to `/api/todos` with JSON body `{ text }`, expect 201 response
+  - [x] 2.4: Parse and return response as `Todo` type
+  - [x] 2.5: Write unit tests in `frontend/src/__tests__/api/todos.test.ts`
 
-- [ ] Task 3: Create useTodos hook with create mutation (AC: #2)
-  - [ ] 3.1: Create `frontend/src/hooks/useTodos.ts`
-  - [ ] 3.2: Implement `useCreateTodo` mutation using `useMutation` from TanStack Query
-  - [ ] 3.3: Implement optimistic update pattern: `onMutate` → cancel queries, snapshot, add optimistic todo with temp ID; `onError` → rollback; `onSettled` → invalidate
-  - [ ] 3.4: Write unit tests in `frontend/src/__tests__/hooks/useTodos.test.ts`
+- [x] Task 3: Create useTodos hook with create mutation (AC: #2)
+  - [x] 3.1: Create `frontend/src/hooks/useTodos.ts`
+  - [x] 3.2: Implement `useCreateTodo` mutation using `useMutation` from TanStack Query
+  - [x] 3.3: Implement optimistic update pattern: `onMutate` → cancel queries, snapshot, add optimistic todo with temp ID; `onError` → rollback; `onSettled` → invalidate
+  - [x] 3.4: Write unit tests in `frontend/src/__tests__/hooks/useTodos.test.ts`
 
-- [ ] Task 4: Create TodoInput component (AC: #1, #2, #3, #4)
-  - [ ] 4.1: Create `frontend/src/components/TodoInput.tsx`
-  - [ ] 4.2: Implement single `<input>` element with left accent border, placeholder "What needs doing?", auto-focus on mount
-  - [ ] 4.3: Handle Enter key: trim text, reject empty/whitespace, call `createTodo` mutation, clear input, retain focus
-  - [ ] 4.4: Handle Escape key: clear input text
-  - [ ] 4.5: Add accessibility: `aria-label="Add a new task"`, visible focus ring
-  - [ ] 4.6: Apply UX design tokens: transparent bg, `border-left: 2px solid accent`, font-weight 300, font-size 1.125rem
+- [x] Task 4: Create TodoInput component (AC: #1, #2, #3, #4)
+  - [x] 4.1: Create `frontend/src/components/TodoInput.tsx`
+  - [x] 4.2: Implement single `<input>` element with left accent border, placeholder "What needs doing?", auto-focus on mount
+  - [x] 4.3: Handle Enter key: trim text, reject empty/whitespace, call `createTodo` mutation, clear input, retain focus
+  - [x] 4.4: Handle Escape key: clear input text
+  - [x] 4.5: Add accessibility: `aria-label="Add a new task"`, visible focus ring
+  - [x] 4.6: Apply UX design tokens: transparent bg, `border-left: 2px solid accent`, font-weight 300, font-size 1.125rem
 
-- [ ] Task 5: Integrate TodoInput into App component (AC: #1)
-  - [ ] 5.1: Import and render `TodoInput` below the header in `App.tsx`
-  - [ ] 5.2: Ensure proper spacing between header and input (24px / `mb-6`)
+- [x] Task 5: Integrate TodoInput into App component (AC: #1)
+  - [x] 5.1: Import and render `TodoInput` below the header in `App.tsx`
+  - [x] 5.2: Ensure proper spacing between header and input (24px / `mb-6`)
 
-- [ ] Task 6: Write component tests (AC: #5)
-  - [ ] 6.1: Create `frontend/src/__tests__/components/TodoInput.test.tsx`
-  - [ ] 6.2: Test input renders with placeholder "What needs doing?"
-  - [ ] 6.3: Test input is auto-focused on mount
-  - [ ] 6.4: Test Enter with text calls createTodo mutation and clears input
-  - [ ] 6.5: Test Enter with empty input does nothing (no API call)
-  - [ ] 6.6: Test Enter with whitespace-only input does nothing
-  - [ ] 6.7: Test text is trimmed before submission
-  - [ ] 6.8: Test Escape key clears input text
-  - [ ] 6.9: Test input retains focus after submission
-  - [ ] 6.10: Test `aria-label="Add a new task"` is present
+- [x] Task 6: Write component tests (AC: #5)
+  - [x] 6.1: Create `frontend/src/__tests__/components/TodoInput.test.tsx`
+  - [x] 6.2: Test input renders with placeholder "What needs doing?"
+  - [x] 6.3: Test input is auto-focused on mount
+  - [x] 6.4: Test Enter with text calls createTodo mutation and clears input
+  - [x] 6.5: Test Enter with empty input does nothing (no API call)
+  - [x] 6.6: Test Enter with whitespace-only input does nothing
+  - [x] 6.7: Test text is trimmed before submission
+  - [x] 6.8: Test Escape key clears input text
+  - [x] 6.9: Test input retains focus after submission
+  - [x] 6.10: Test `aria-label="Add a new task"` is present
 
 ## Dev Notes
 
@@ -460,10 +460,33 @@ The TodoInput component can work independently — it submits to the API and cle
 
 ### Agent Model Used
 
-{{agent_model_name_version}}
+Claude Opus 4.6
 
 ### Debug Log References
 
+- Hook test required `.tsx` extension (JSX in wrapper function). TanStack Query v5 passes mutation context as second arg to `mutationFn` — test assertions updated to use `expect.anything()`.
+
 ### Completion Notes List
 
+- Task 1: Added `@theme` block to `app.css` with 9 color tokens. Existing App.tsx classes verified working (App.test.tsx passes).
+- Task 2: Created `api/todos.ts` with `createTodo()` fetch wrapper using `API_BASE_URL`. Throws on non-ok response. 2 unit tests.
+- Task 3: Created `hooks/useTodos.ts` with `useCreateTodo()` mutation — optimistic add with temp negative ID, error rollback, settlement invalidation. 3 unit tests (mutation call, optimistic success, error rollback).
+- Task 4: Created `TodoInput.tsx` — controlled input with auto-focus, Enter submit (trim + empty rejection), Escape clear, left accent border, aria-label, focus ring.
+- Task 5: Integrated `<TodoInput />` into App.tsx below header (mb-6 spacing via existing header class).
+- Task 6: 9 component tests covering all ACs: placeholder, auto-focus, Enter submit + clear, empty rejection, whitespace rejection, trimming, Escape clear, focus retention, aria-label.
+
+### Change Log
+
+- 2026-03-07: Story 2.3 implemented — TodoInput component with API client, TanStack Query hook, and design tokens (16 frontend tests, 0 regressions)
+- 2026-03-07: Code review fixes — API error now includes server message (M1), optimistic update test verifies cache during in-flight mutation (M2), removed unnecessary QueryClientProvider from component tests (M3)
+
 ### File List
+
+- `bmad-todo/frontend/src/app.css` (MODIFIED) — added @theme block with design system color tokens
+- `bmad-todo/frontend/src/components/App.tsx` (MODIFIED) — added TodoInput import and render
+- `bmad-todo/frontend/src/api/todos.ts` (NEW) — createTodo fetch wrapper
+- `bmad-todo/frontend/src/hooks/useTodos.ts` (NEW) — useCreateTodo mutation with optimistic updates
+- `bmad-todo/frontend/src/components/TodoInput.tsx` (NEW) — input component with Enter/Escape handling
+- `bmad-todo/frontend/src/__tests__/api/todos.test.ts` (NEW) — 2 API client tests
+- `bmad-todo/frontend/src/__tests__/hooks/useTodos.test.tsx` (NEW) — 3 hook tests
+- `bmad-todo/frontend/src/__tests__/components/TodoInput.test.tsx` (NEW) — 9 component tests

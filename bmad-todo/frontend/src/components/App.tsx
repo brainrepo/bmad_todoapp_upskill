@@ -1,3 +1,5 @@
+import { TodoInput } from './TodoInput'
+
 export function App() {
   return (
     <div className="min-h-screen bg-bg text-text-primary font-sans">
@@ -10,6 +12,7 @@ export function App() {
             a simple list
           </p>
         </header>
+        <TodoInput />
       </main>
     </div>
   )
