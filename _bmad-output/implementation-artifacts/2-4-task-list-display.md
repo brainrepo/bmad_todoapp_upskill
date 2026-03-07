@@ -1,6 +1,6 @@
 # Story 2.4: Task List Display
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -28,58 +28,58 @@ So that I can scan what I need to do at a glance.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Add getTodos to API client layer (AC: #1)
-  - [ ] 1.1: Add `getTodos()` fetch wrapper to `frontend/src/api/todos.ts`
-  - [ ] 1.2: GET `/api/todos`, return `Todo[]` array
-  - [ ] 1.3: Add unit tests in `frontend/src/__tests__/api/todos.test.ts`
+- [x] Task 1: Add getTodos to API client layer (AC: #1)
+  - [x] 1.1: Add `getTodos()` fetch wrapper to `frontend/src/api/todos.ts`
+  - [x] 1.2: GET `/api/todos`, return `Todo[]` array
+  - [x] 1.3: Add unit tests in `frontend/src/__tests__/api/todos.test.ts`
 
-- [ ] Task 2: Add useTodos query hook (AC: #1)
-  - [ ] 2.1: Add `useTodos()` hook to `frontend/src/hooks/useTodos.ts` using `useQuery` with `QUERY_KEYS.TODOS`
-  - [ ] 2.2: Return `{ todos, isLoading, isError }` from the hook
-  - [ ] 2.3: Add unit tests in `frontend/src/__tests__/hooks/useTodos.test.ts`
+- [x] Task 2: Add useTodos query hook (AC: #1)
+  - [x] 2.1: Add `useTodos()` hook to `frontend/src/hooks/useTodos.ts` using `useQuery` with `QUERY_KEYS.TODOS`
+  - [x] 2.2: Return `{ todos, isLoading, isError }` from the hook
+  - [x] 2.3: Add unit tests in `frontend/src/__tests__/hooks/useTodos.test.ts`
 
-- [ ] Task 3: Create TodoItem component (AC: #1)
-  - [ ] 3.1: Create `frontend/src/components/TodoItem.tsx`
-  - [ ] 3.2: Accept `todo: Todo` prop
-  - [ ] 3.3: Display task text (1.125rem, font-light) with active styling (`text-text-primary`)
-  - [ ] 3.4: Display completed styling: `text-text-secondary`, `line-through`, `italic`
-  - [ ] 3.5: Display creation timestamp as uppercase metadata (0.75rem, `text-text-placeholder`, uppercase, letter-spacing)
-  - [ ] 3.6: Add transition for completion state (300ms ease via Tailwind `transition-all duration-300`)
-  - [ ] 3.7: Add `motion-reduce:transition-none` for reduced motion support
-  - [ ] 3.8: Add accessibility: semantic `<li>`, `role="checkbox"`, `aria-checked` for completion state
-  - [ ] 3.9: Style hover state: left border color change to `border` token, subtle surface hover bg
+- [x] Task 3: Create TodoItem component (AC: #1)
+  - [x] 3.1: Create `frontend/src/components/TodoItem.tsx`
+  - [x] 3.2: Accept `todo: Todo` prop
+  - [x] 3.3: Display task text (1.125rem, font-light) with active styling (`text-text-primary`)
+  - [x] 3.4: Display completed styling: `text-text-secondary`, `line-through`, `italic`
+  - [x] 3.5: Display creation timestamp as uppercase metadata (0.75rem, `text-text-placeholder`, uppercase, letter-spacing)
+  - [x] 3.6: Add transition for completion state (300ms ease via Tailwind `transition-all duration-300`)
+  - [x] 3.7: Add `motion-reduce:transition-none` for reduced motion support
+  - [x] 3.8: Add accessibility: semantic `<li>`, `role="checkbox"`, `aria-checked` for completion state
+  - [x] 3.9: Style hover state: left border color change to `border` token, subtle surface hover bg
 
-- [ ] Task 4: Create TodoList component (AC: #1)
-  - [ ] 4.1: Create `frontend/src/components/TodoList.tsx`
-  - [ ] 4.2: Consume `useTodos()` hook to get todos array
-  - [ ] 4.3: Render `<ul>` with `role="list"`, `aria-label="Task list"`
-  - [ ] 4.4: Map todos to `<TodoItem>` components with `key={todo.id}`
-  - [ ] 4.5: Add 2px `border` divider between items (via `border-b border-border` or `divide-y`)
+- [x] Task 4: Create TodoList component (AC: #1)
+  - [x] 4.1: Create `frontend/src/components/TodoList.tsx`
+  - [x] 4.2: Consume `useTodos()` hook to get todos array
+  - [x] 4.3: Render `<ul>` with `role="list"`, `aria-label="Task list"`
+  - [x] 4.4: Map todos to `<TodoItem>` components with `key={todo.id}`
+  - [x] 4.5: Add 2px `border` divider between items (via `border-b border-border` or `divide-y`)
 
-- [ ] Task 5: Extract AppHeader component (AC: #2)
-  - [ ] 5.1: Create `frontend/src/components/AppHeader.tsx`
-  - [ ] 5.2: Move header markup from `App.tsx` into this component
-  - [ ] 5.3: Title: "things to do" (2rem, weight 200, letter-spacing 0.04em, `text-text-primary`)
-  - [ ] 5.4: Subtitle: "a simple list" (0.8125rem, uppercase, letter-spacing 0.1em, `text-text-placeholder`)
+- [x] Task 5: Extract AppHeader component (AC: #2)
+  - [x] 5.1: Create `frontend/src/components/AppHeader.tsx`
+  - [x] 5.2: Move header markup from `App.tsx` into this component
+  - [x] 5.3: Title: "things to do" (2rem, weight 200, letter-spacing 0.04em, `text-text-primary`)
+  - [x] 5.4: Subtitle: "a simple list" (0.8125rem, uppercase, letter-spacing 0.1em, `text-text-placeholder`)
 
-- [ ] Task 6: Integrate components into App (AC: #1, #2)
-  - [ ] 6.1: Update `App.tsx` to use `<AppHeader />`, `<TodoInput />`, `<TodoList />`
-  - [ ] 6.2: Layout order: AppHeader → TodoInput → TodoList (24px spacing between sections)
-  - [ ] 6.3: Responsive: full-width `px-4` on mobile, `sm:max-w-[640px] sm:mx-auto sm:px-12` on desktop
+- [x] Task 6: Integrate components into App (AC: #1, #2)
+  - [x] 6.1: Update `App.tsx` to use `<AppHeader />`, `<TodoInput />`, `<TodoList />`
+  - [x] 6.2: Layout order: AppHeader → TodoInput → TodoList (24px spacing between sections)
+  - [x] 6.3: Responsive: full-width `px-4` on mobile, `sm:max-w-[640px] sm:mx-auto sm:px-12` on desktop
 
-- [ ] Task 7: Write component tests (AC: #3)
-  - [ ] 7.1: Create `frontend/src/__tests__/components/TodoItem.test.tsx`
-  - [ ] 7.2: Test active todo displays text in primary color, no strikethrough
-  - [ ] 7.3: Test completed todo displays text in secondary color with strikethrough and italic
-  - [ ] 7.4: Test timestamp metadata is displayed (uppercase)
-  - [ ] 7.5: Test accessibility attributes (`role="checkbox"`, `aria-checked`)
-  - [ ] 7.6: Create `frontend/src/__tests__/components/TodoList.test.tsx`
-  - [ ] 7.7: Test populated list renders all todos
-  - [ ] 7.8: Test todos are rendered in order (first created = first in list)
-  - [ ] 7.9: Test list has `role="list"` and `aria-label="Task list"`
-  - [ ] 7.10: Create `frontend/src/__tests__/components/AppHeader.test.tsx`
-  - [ ] 7.11: Test title "things to do" is rendered
-  - [ ] 7.12: Test subtitle "a simple list" is rendered
+- [x] Task 7: Write component tests (AC: #3)
+  - [x] 7.1: Create `frontend/src/__tests__/components/TodoItem.test.tsx`
+  - [x] 7.2: Test active todo displays text in primary color, no strikethrough
+  - [x] 7.3: Test completed todo displays text in secondary color with strikethrough and italic
+  - [x] 7.4: Test timestamp metadata is displayed (uppercase)
+  - [x] 7.5: Test accessibility attributes (`role="checkbox"`, `aria-checked`)
+  - [x] 7.6: Create `frontend/src/__tests__/components/TodoList.test.tsx`
+  - [x] 7.7: Test populated list renders all todos
+  - [x] 7.8: Test todos are rendered in order (first created = first in list)
+  - [x] 7.9: Test list has `role="list"` and `aria-label="Task list"`
+  - [x] 7.10: Create `frontend/src/__tests__/components/AppHeader.test.tsx`
+  - [x] 7.11: Test title "things to do" is rendered
+  - [x] 7.12: Test subtitle "a simple list" is rendered
 
 ## Dev Notes
 
@@ -512,4 +512,30 @@ This story focuses purely on **displaying todos** — the visual presentation la
 
 ### Completion Notes List
 
+- All 7 tasks completed following TDD Red-Green cycle
+- 34 frontend tests pass (12 new: 4 TodoItem + 6 TodoList + 2 AppHeader)
+- 24 backend tests pass (no changes)
+- TypeScript compiles cleanly
+- Responsive layout: px-4 mobile, sm:px-12 desktop
+- TodoItem: active/completed styling, accessibility (role=checkbox, aria-checked), motion-reduce support
+- TodoList: consumes useTodos hook, returns null for loading/error/empty (Epic 4 scope)
+- AppHeader: extracted from App.tsx, preserves existing styling
+- App.tsx: integrates AppHeader, TodoInput, TodoList with 24px spacing
+- Code review fixes: timestamp font size corrected to 0.6875rem per UX spec, added font-normal to timestamp, added TodoList state branch tests (loading/error/empty), hardened timestamp test assertion
+
 ### File List
+
+**Created:**
+- `bmad-todo/frontend/src/components/TodoItem.tsx`
+- `bmad-todo/frontend/src/components/TodoList.tsx`
+- `bmad-todo/frontend/src/components/AppHeader.tsx`
+- `bmad-todo/frontend/src/__tests__/components/TodoItem.test.tsx`
+- `bmad-todo/frontend/src/__tests__/components/TodoList.test.tsx`
+- `bmad-todo/frontend/src/__tests__/components/AppHeader.test.tsx`
+
+**Modified:**
+- `bmad-todo/frontend/src/api/todos.ts` — added getTodos()
+- `bmad-todo/frontend/src/hooks/useTodos.ts` — added useTodos() query hook
+- `bmad-todo/frontend/src/components/App.tsx` — integrated AppHeader, TodoInput, TodoList with responsive layout
+- `bmad-todo/frontend/src/__tests__/api/todos.test.ts` — added 2 getTodos tests
+- `bmad-todo/frontend/src/__tests__/hooks/useTodos.test.tsx` — added 3 useTodos tests

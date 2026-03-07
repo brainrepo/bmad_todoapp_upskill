@@ -2,11 +2,13 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { renderHook, act, waitFor } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import type { ReactNode } from 'react'
-import { useCreateTodo } from '../../hooks/useTodos'
+import { useCreateTodo, useTodos } from '../../hooks/useTodos'
 
 const mockCreateTodo = vi.fn()
+const mockGetTodos = vi.fn()
 vi.mock('../../api/todos', () => ({
   createTodo: (...args: unknown[]) => mockCreateTodo(...args),
+  getTodos: () => mockGetTodos(),
 }))
 
 function createWrapper() {
@@ -17,6 +19,49 @@ function createWrapper() {
     return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   }
 }
+
+describe('useTodos', () => {
+  beforeEach(() => {
+    mockGetTodos.mockReset()
+  })
+
+  it('returns todos from API', async () => {
+    const mockTodos = [
+      { id: 1, text: 'First', completed: false, createdAt: '2026-03-07' },
+      { id: 2, text: 'Second', completed: true, createdAt: '2026-03-07' },
+    ]
+    mockGetTodos.mockResolvedValueOnce(mockTodos)
+
+    const { result } = renderHook(() => useTodos(), { wrapper: createWrapper() })
+
+    await waitFor(() => {
+      expect(result.current.todos).toEqual(mockTodos)
+    })
+    expect(result.current.isLoading).toBe(false)
+    expect(result.current.isError).toBe(false)
+  })
+
+  it('defaults to empty array when no data', async () => {
+    mockGetTodos.mockResolvedValueOnce([])
+
+    const { result } = renderHook(() => useTodos(), { wrapper: createWrapper() })
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false)
+    })
+    expect(result.current.todos).toEqual([])
+  })
+
+  it('sets isError on fetch failure', async () => {
+    mockGetTodos.mockRejectedValueOnce(new Error('Network error'))
+
+    const { result } = renderHook(() => useTodos(), { wrapper: createWrapper() })
+
+    await waitFor(() => {
+      expect(result.current.isError).toBe(true)
+    })
+  })
+})
 
 describe('useCreateTodo', () => {
   beforeEach(() => {

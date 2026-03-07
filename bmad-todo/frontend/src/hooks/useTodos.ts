@@ -1,7 +1,15 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { QUERY_KEYS } from '../constants'
-import { createTodo } from '../api/todos'
+import { createTodo, getTodos } from '../api/todos'
 import type { Todo } from '../types'
+
+export function useTodos() {
+  const { data: todos = [], isLoading, isError } = useQuery({
+    queryKey: QUERY_KEYS.TODOS,
+    queryFn: getTodos,
+  })
+  return { todos, isLoading, isError }
+}
 
 export function useCreateTodo() {
   const queryClient = useQueryClient()

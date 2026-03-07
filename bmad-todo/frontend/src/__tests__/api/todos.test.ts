@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { createTodo } from '../../api/todos'
+import { createTodo, getTodos } from '../../api/todos'
 
 const mockFetch = vi.fn()
 vi.stubGlobal('fetch', mockFetch)
@@ -44,5 +44,33 @@ describe('createTodo API', () => {
     })
 
     await expect(createTodo('test')).rejects.toThrow('Failed to create todo')
+  })
+})
+
+describe('getTodos API', () => {
+  beforeEach(() => {
+    mockFetch.mockReset()
+  })
+
+  it('sends GET /api/todos and returns todo array', async () => {
+    const mockTodos = [
+      { id: 1, text: 'First', completed: false, createdAt: '2026-03-07' },
+      { id: 2, text: 'Second', completed: true, createdAt: '2026-03-07' },
+    ]
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve(mockTodos),
+    })
+
+    const result = await getTodos()
+
+    expect(mockFetch).toHaveBeenCalledWith('/api/todos')
+    expect(result).toEqual(mockTodos)
+  })
+
+  it('throws on non-ok response', async () => {
+    mockFetch.mockResolvedValueOnce({ ok: false, status: 500 })
+
+    await expect(getTodos()).rejects.toThrow('Failed to fetch todos')
   })
 })

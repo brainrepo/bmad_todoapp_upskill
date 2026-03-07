@@ -13,3 +13,11 @@ export async function createTodo(text: string): Promise<Todo> {
   }
   return response.json()
 }
+
+export async function getTodos(): Promise<Todo[]> {
+  const response = await fetch(`${API_BASE_URL}/todos`)
+  if (!response.ok) {
+    throw new Error('Failed to fetch todos')
+  }
+  return response.json()
+}
