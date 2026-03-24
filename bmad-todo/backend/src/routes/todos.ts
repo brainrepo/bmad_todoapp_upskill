@@ -5,9 +5,9 @@ import {
   errorResponseSchema,
   listTodosResponseSchema,
   patchTodoBodySchema,
-  patchTodoParamsSchema,
+  todoIdParamsSchema,
 } from '../schemas/todos.js'
-import { createTodo, getAllTodos, toggleTodo } from '../services/todos.js'
+import { createTodo, getAllTodos, toggleTodo, deleteTodo } from '../services/todos.js'
 
 export default async function todoRoutes(server: FastifyInstance) {
   server.post(
@@ -38,7 +38,7 @@ export default async function todoRoutes(server: FastifyInstance) {
     '/api/todos/:id',
     {
       schema: {
-        params: patchTodoParamsSchema,
+        params: todoIdParamsSchema,
         body: patchTodoBodySchema,
         response: {
           200: todoResponseSchema,
@@ -56,6 +56,28 @@ export default async function todoRoutes(server: FastifyInstance) {
       }
 
       return todo
+    },
+  )
+
+  server.delete(
+    '/api/todos/:id',
+    {
+      schema: {
+        params: todoIdParamsSchema,
+        response: {
+          404: errorResponseSchema,
+        },
+      },
+    },
+    async (request, reply) => {
+      const { id } = request.params as { id: number }
+
+      const deleted = deleteTodo(server.db, id)
+      if (!deleted) {
+        throw server.httpErrors.notFound('Todo not found')
+      }
+
+      return reply.status(204).send()
     },
   )
 

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import { buildServer } from '../../src/server.js'
-import { createTodo, getAllTodos, toggleTodo } from '../../src/services/todos.js'
+import { createTodo, getAllTodos, toggleTodo, deleteTodo } from '../../src/services/todos.js'
 
 describe('TodoService', () => {
   const server = buildServer({ logger: false })
@@ -130,5 +130,45 @@ describe('TodoService - toggleTodo', () => {
 
     expect(toggled!.completed).toBe(true)
     expect(typeof toggled!.completed).toBe('boolean')
+  })
+})
+
+describe('TodoService - deleteTodo', () => {
+  const server = buildServer({ logger: false })
+
+  beforeAll(async () => {
+    await server.ready()
+  })
+
+  afterAll(async () => {
+    await server.close()
+  })
+
+  it('returns true when deleting an existing todo', () => {
+    const created = createTodo(server.db, 'Delete me')
+    const result = deleteTodo(server.db, created.id)
+    expect(result).toBe(true)
+  })
+
+  it('returns false for non-existent ID', () => {
+    const result = deleteTodo(server.db, 999999)
+    expect(result).toBe(false)
+  })
+
+  it('removes the todo from the database', () => {
+    const created = createTodo(server.db, 'Will be gone')
+    deleteTodo(server.db, created.id)
+
+    const allTodos = getAllTodos(server.db)
+    const found = allTodos.find(t => t.id === created.id)
+    expect(found).toBeUndefined()
+  })
+
+  it('returns false when deleting an already-deleted todo', () => {
+    const created = createTodo(server.db, 'Double delete')
+    deleteTodo(server.db, created.id)
+
+    const result = deleteTodo(server.db, created.id)
+    expect(result).toBe(false)
   })
 })

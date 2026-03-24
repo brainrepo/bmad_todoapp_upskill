@@ -26,6 +26,11 @@ export function toggleTodo(db: BetterSqlite3.Database, id: number, completed: bo
   return row ? mapTodoRow(row) : null
 }
 
+export function deleteTodo(db: BetterSqlite3.Database, id: number): boolean {
+  const result = db.prepare('DELETE FROM todos WHERE id = ?').run(id)
+  return result.changes > 0
+}
+
 export function getAllTodos(db: BetterSqlite3.Database): Todo[] {
   const rows = db
     .prepare('SELECT id, text, completed, created_at FROM todos ORDER BY created_at ASC')

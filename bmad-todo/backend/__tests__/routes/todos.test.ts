@@ -382,3 +382,123 @@ describe('PATCH /api/todos/:id', () => {
     expect(response.statusCode).toBe(400)
   })
 })
+
+describe('DELETE /api/todos/:id', () => {
+  const server = buildServer({ logger: false })
+
+  afterAll(async () => {
+    await server.close()
+  })
+
+  it('returns 204 with empty body for existing todo', async () => {
+    const createRes = await server.inject({
+      method: 'POST',
+      url: '/api/todos',
+      payload: { text: 'Delete me' },
+    })
+    const { id } = createRes.json()
+
+    const response = await server.inject({
+      method: 'DELETE',
+      url: `/api/todos/${id}`,
+    })
+
+    expect(response.statusCode).toBe(204)
+    expect(response.body).toBe('')
+    expect(response.headers['content-type']).toBeUndefined()
+  })
+
+  it('returns 404 with error contract for non-existent ID', async () => {
+    const response = await server.inject({
+      method: 'DELETE',
+      url: '/api/todos/999999',
+    })
+
+    expect(response.statusCode).toBe(404)
+    expect(response.headers['content-type']).toMatch(/application\/json/)
+    const body = response.json()
+    expect(body).toMatchObject({
+      statusCode: 404,
+      error: 'Not Found',
+      message: 'Todo not found',
+    })
+  })
+
+  it('todo is no longer returned by GET after deletion', async () => {
+    const createRes = await server.inject({
+      method: 'POST',
+      url: '/api/todos',
+      payload: { text: 'Gone after delete' },
+    })
+    const { id } = createRes.json()
+
+    await server.inject({
+      method: 'DELETE',
+      url: `/api/todos/${id}`,
+    })
+
+    const listRes = await server.inject({
+      method: 'GET',
+      url: '/api/todos',
+    })
+    const todos = listRes.json()
+    const found = todos.find((t: { id: number }) => t.id === id)
+    expect(found).toBeUndefined()
+  })
+
+  it('returns 400 for non-integer id parameter', async () => {
+    const response = await server.inject({
+      method: 'DELETE',
+      url: '/api/todos/abc',
+    })
+
+    expect(response.statusCode).toBe(400)
+  })
+
+  it('ignores unexpected request body on DELETE', async () => {
+    const createRes = await server.inject({
+      method: 'POST',
+      url: '/api/todos',
+      payload: { text: 'Body ignored' },
+    })
+    const { id } = createRes.json()
+
+    const response = await server.inject({
+      method: 'DELETE',
+      url: `/api/todos/${id}`,
+      payload: { text: 'sneaky' },
+    })
+
+    expect(response.statusCode).toBe(204)
+  })
+
+  it('returns 400 for negative id parameter', async () => {
+    const response = await server.inject({
+      method: 'DELETE',
+      url: '/api/todos/-1',
+    })
+
+    expect(response.statusCode).toBe(400)
+  })
+
+  it('returns 404 when deleting an already-deleted todo', async () => {
+    const createRes = await server.inject({
+      method: 'POST',
+      url: '/api/todos',
+      payload: { text: 'Double delete' },
+    })
+    const { id } = createRes.json()
+
+    await server.inject({
+      method: 'DELETE',
+      url: `/api/todos/${id}`,
+    })
+
+    const response = await server.inject({
+      method: 'DELETE',
+      url: `/api/todos/${id}`,
+    })
+
+    expect(response.statusCode).toBe(404)
+  })
+})

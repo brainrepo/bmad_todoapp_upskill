@@ -23,11 +23,11 @@ export const listTodosResponseSchema = {
   items: todoResponseSchema,
 } as const
 
-export const patchTodoParamsSchema = {
+export const todoIdParamsSchema = {
   type: 'object',
   required: ['id'],
   properties: {
-    id: { type: 'integer' },
+    id: { type: 'integer', minimum: 1 },
   },
   additionalProperties: false,
 } as const
