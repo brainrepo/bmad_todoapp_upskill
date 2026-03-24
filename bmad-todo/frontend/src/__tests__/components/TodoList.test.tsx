@@ -1,11 +1,13 @@
-import { describe, it, expect, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { TodoList } from '../../components/TodoList'
 
 const mockUseTodos = vi.fn()
+const mockMutate = vi.fn()
 
 vi.mock('../../hooks/useTodos', () => ({
   useTodos: () => mockUseTodos(),
+  useToggleTodo: () => ({ mutate: mockMutate }),
 }))
 
 const mockTodos = [
@@ -14,6 +16,11 @@ const mockTodos = [
 ]
 
 describe('TodoList', () => {
+  beforeEach(() => {
+    mockUseTodos.mockReset()
+    mockMutate.mockReset()
+  })
+
   it('renders all todos in a list', () => {
     mockUseTodos.mockReturnValue({ todos: mockTodos, isLoading: false, isError: false })
     render(<TodoList />)
@@ -53,5 +60,18 @@ describe('TodoList', () => {
     mockUseTodos.mockReturnValue({ todos: [], isLoading: false, isError: false })
     const { container } = render(<TodoList />)
     expect(container.innerHTML).toBe('')
+  })
+
+  it('calls toggle mutation when a todo is clicked', () => {
+    mockUseTodos.mockReturnValue({ todos: mockTodos, isLoading: false, isError: false })
+    render(<TodoList />)
+    const items = screen.getAllByRole('checkbox')
+
+    fireEvent.click(items[0])
+    expect(mockMutate).toHaveBeenCalledWith({ id: 1, completed: true })
+
+    mockMutate.mockClear()
+    fireEvent.click(items[1])
+    expect(mockMutate).toHaveBeenCalledWith({ id: 2, completed: false })
   })
 })

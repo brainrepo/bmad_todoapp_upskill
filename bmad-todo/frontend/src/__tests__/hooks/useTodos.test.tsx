@@ -2,13 +2,15 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { renderHook, act, waitFor } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import type { ReactNode } from 'react'
-import { useCreateTodo, useTodos } from '../../hooks/useTodos'
+import { useCreateTodo, useTodos, useToggleTodo } from '../../hooks/useTodos'
 
 const mockCreateTodo = vi.fn()
 const mockGetTodos = vi.fn()
+const mockToggleTodo = vi.fn()
 vi.mock('../../api/todos', () => ({
   createTodo: (...args: unknown[]) => mockCreateTodo(...args),
   getTodos: () => mockGetTodos(),
+  toggleTodo: (...args: unknown[]) => mockToggleTodo(...args),
 }))
 
 function createWrapper() {
@@ -144,6 +146,88 @@ describe('useCreateTodo', () => {
     await waitFor(() => {
       const cached = queryClient.getQueryData<unknown[]>(['todos'])
       expect(cached).toEqual(originalTodos)
+    })
+  })
+})
+
+describe('useToggleTodo', () => {
+  beforeEach(() => {
+    mockToggleTodo.mockReset()
+  })
+
+  it('calls toggleTodo API with id and completed', async () => {
+    const mockTodo = { id: 1, text: 'Test', completed: true, createdAt: '2026-03-07' }
+    mockToggleTodo.mockResolvedValueOnce(mockTodo)
+
+    const { result } = renderHook(() => useToggleTodo(), { wrapper: createWrapper() })
+
+    act(() => {
+      result.current.mutate({ id: 1, completed: true })
+    })
+
+    await waitFor(() => {
+      expect(mockToggleTodo).toHaveBeenCalledWith(1, true)
+    })
+  })
+
+  it('invalidates todos query on settled after success', async () => {
+    const mockTodo = { id: 1, text: 'Test', completed: true, createdAt: '2026-03-07' }
+    mockToggleTodo.mockResolvedValueOnce(mockTodo)
+    mockGetTodos.mockResolvedValue([mockTodo])
+
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    })
+    queryClient.setQueryData(['todos'], [{ id: 1, text: 'Test', completed: false, createdAt: '2026-03-07' }])
+
+    function Wrapper({ children }: { children: ReactNode }) {
+      return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    }
+
+    const { result } = renderHook(() => useToggleTodo(), { wrapper: Wrapper })
+
+    act(() => {
+      result.current.mutate({ id: 1, completed: true })
+    })
+
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBe(true)
+    })
+
+    // After settled, the query should be invalidated (triggers refetch)
+    await waitFor(() => {
+      const state = queryClient.getQueryState(['todos'])
+      expect(state?.isInvalidated).toBe(true)
+    })
+  })
+
+  it('invalidates todos query on settled after error', async () => {
+    mockToggleTodo.mockRejectedValueOnce(new Error('Network error'))
+    mockGetTodos.mockResolvedValue([])
+
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    })
+    queryClient.setQueryData(['todos'], [{ id: 1, text: 'Test', completed: false, createdAt: '2026-03-07' }])
+
+    function Wrapper({ children }: { children: ReactNode }) {
+      return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    }
+
+    const { result } = renderHook(() => useToggleTodo(), { wrapper: Wrapper })
+
+    act(() => {
+      result.current.mutate({ id: 1, completed: true })
+    })
+
+    await waitFor(() => {
+      expect(result.current.isError).toBe(true)
+    })
+
+    // After settled (even on error), the query should be invalidated
+    await waitFor(() => {
+      const state = queryClient.getQueryState(['todos'])
+      expect(state?.isInvalidated).toBe(true)
     })
   })
 })

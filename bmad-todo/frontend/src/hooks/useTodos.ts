@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { QUERY_KEYS } from '../constants'
-import { createTodo, getTodos } from '../api/todos'
+import { createTodo, getTodos, toggleTodo } from '../api/todos'
 import type { Todo } from '../types'
 
 export function useTodos() {
@@ -39,6 +39,18 @@ export function useCreateTodo() {
         queryClient.setQueryData(QUERY_KEYS.TODOS, context.previous)
       }
     },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.TODOS })
+    },
+  })
+}
+
+export function useToggleTodo() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, completed }: { id: number; completed: boolean }) =>
+      toggleTodo(id, completed),
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.TODOS })
     },

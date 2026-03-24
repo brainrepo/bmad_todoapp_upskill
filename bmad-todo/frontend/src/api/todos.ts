@@ -14,6 +14,19 @@ export async function createTodo(text: string): Promise<Todo> {
   return response.json()
 }
 
+export async function toggleTodo(id: number, completed: boolean): Promise<Todo> {
+  const response = await fetch(`${API_BASE_URL}/todos/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ completed }),
+  })
+  if (!response.ok) {
+    const body = await response.json().catch(() => null)
+    throw new Error(body?.message ?? 'Failed to update todo')
+  }
+  return response.json()
+}
+
 export async function getTodos(): Promise<Todo[]> {
   const response = await fetch(`${API_BASE_URL}/todos`)
   if (!response.ok) {
