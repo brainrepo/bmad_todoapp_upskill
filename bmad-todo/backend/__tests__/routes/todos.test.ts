@@ -184,9 +184,14 @@ describe('GET /api/todos', () => {
     const server = buildServer({ logger: false })
     await server.inject({ method: 'POST', url: '/api/todos', payload: { text: 'Active' } })
     await server.inject({ method: 'POST', url: '/api/todos', payload: { text: 'Done' } })
-    // Mark second todo as completed directly via DB (no toggle endpoint yet)
-    await server.ready()
-    server.db.prepare("UPDATE todos SET completed = 1 WHERE text = 'Done'").run()
+    // Mark second todo as completed via PATCH endpoint
+    const doneTodo = (await server.inject({ method: 'GET', url: '/api/todos' })).json()
+      .find((t: { text: string }) => t.text === 'Done')
+    await server.inject({
+      method: 'PATCH',
+      url: `/api/todos/${doneTodo.id}`,
+      payload: { completed: true },
+    })
 
     const response = await server.inject({ method: 'GET', url: '/api/todos' })
     const todos = response.json()
@@ -197,5 +202,183 @@ describe('GET /api/todos', () => {
     expect(completedTodo).toBeDefined()
     expect(activeTodo).toBeDefined()
     await server.close()
+  })
+})
+
+describe('PATCH /api/todos/:id', () => {
+  const server = buildServer({ logger: false })
+
+  afterAll(async () => {
+    await server.close()
+  })
+
+  it('returns 200 with updated todo when marking as completed', async () => {
+    const createRes = await server.inject({
+      method: 'POST',
+      url: '/api/todos',
+      payload: { text: 'Complete me' },
+    })
+    const { id } = createRes.json()
+
+    const response = await server.inject({
+      method: 'PATCH',
+      url: `/api/todos/${id}`,
+      payload: { completed: true },
+    })
+
+    expect(response.statusCode).toBe(200)
+    expect(response.headers['content-type']).toMatch(/application\/json/)
+    const body = response.json()
+    expect(body).toMatchObject({
+      id,
+      text: 'Complete me',
+      completed: true,
+    })
+    expect(body.createdAt).toBeDefined()
+  })
+
+  it('returns 200 with updated todo when reverting to active', async () => {
+    const createRes = await server.inject({
+      method: 'POST',
+      url: '/api/todos',
+      payload: { text: 'Revert me' },
+    })
+    const { id } = createRes.json()
+
+    // Mark completed first
+    await server.inject({
+      method: 'PATCH',
+      url: `/api/todos/${id}`,
+      payload: { completed: true },
+    })
+
+    // Revert to active
+    const response = await server.inject({
+      method: 'PATCH',
+      url: `/api/todos/${id}`,
+      payload: { completed: false },
+    })
+
+    expect(response.statusCode).toBe(200)
+    const body = response.json()
+    expect(body.completed).toBe(false)
+  })
+
+  it('returns 404 with error contract for non-existent ID', async () => {
+    const response = await server.inject({
+      method: 'PATCH',
+      url: '/api/todos/999999',
+      payload: { completed: true },
+    })
+
+    expect(response.statusCode).toBe(404)
+    const body = response.json()
+    expect(body).toMatchObject({
+      statusCode: 404,
+      error: 'Not Found',
+      message: 'Todo not found',
+    })
+  })
+
+  it('returns camelCase fields, not snake_case', async () => {
+    const createRes = await server.inject({
+      method: 'POST',
+      url: '/api/todos',
+      payload: { text: 'CamelCase route test' },
+    })
+    const { id } = createRes.json()
+
+    const response = await server.inject({
+      method: 'PATCH',
+      url: `/api/todos/${id}`,
+      payload: { completed: true },
+    })
+
+    const body = response.json()
+    expect(body).toHaveProperty('createdAt')
+    expect(body).not.toHaveProperty('created_at')
+  })
+
+  it('returns completed as boolean, not integer', async () => {
+    const createRes = await server.inject({
+      method: 'POST',
+      url: '/api/todos',
+      payload: { text: 'Boolean route test' },
+    })
+    const { id } = createRes.json()
+
+    const response = await server.inject({
+      method: 'PATCH',
+      url: `/api/todos/${id}`,
+      payload: { completed: true },
+    })
+
+    const body = response.json()
+    expect(body.completed).toBe(true)
+    expect(typeof body.completed).toBe('boolean')
+  })
+
+  it('ignores additional properties in body (text cannot be modified via PATCH)', async () => {
+    const createRes = await server.inject({
+      method: 'POST',
+      url: '/api/todos',
+      payload: { text: 'Original text' },
+    })
+    const { id } = createRes.json()
+
+    const response = await server.inject({
+      method: 'PATCH',
+      url: `/api/todos/${id}`,
+      payload: { completed: true, text: 'sneaky edit' },
+    })
+
+    expect(response.statusCode).toBe(200)
+    const body = response.json()
+    expect(body.text).toBe('Original text')
+    expect(body.completed).toBe(true)
+  })
+
+  it('returns 400 for missing completed field', async () => {
+    const createRes = await server.inject({
+      method: 'POST',
+      url: '/api/todos',
+      payload: { text: 'Missing field test' },
+    })
+    const { id } = createRes.json()
+
+    const response = await server.inject({
+      method: 'PATCH',
+      url: `/api/todos/${id}`,
+      payload: {},
+    })
+
+    expect(response.statusCode).toBe(400)
+  })
+
+  it('returns 400 for non-boolean completed value', async () => {
+    const createRes = await server.inject({
+      method: 'POST',
+      url: '/api/todos',
+      payload: { text: 'Type check test' },
+    })
+    const { id } = createRes.json()
+
+    const response = await server.inject({
+      method: 'PATCH',
+      url: `/api/todos/${id}`,
+      payload: { completed: 'yes' },
+    })
+
+    expect(response.statusCode).toBe(400)
+  })
+
+  it('returns 400 for non-integer id parameter', async () => {
+    const response = await server.inject({
+      method: 'PATCH',
+      url: '/api/todos/abc',
+      payload: { completed: true },
+    })
+
+    expect(response.statusCode).toBe(400)
   })
 })

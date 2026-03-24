@@ -7,7 +7,7 @@ export const createTodoBodySchema = {
   additionalProperties: false,
 } as const
 
-export const createTodoResponseSchema = {
+export const todoResponseSchema = {
   type: 'object',
   required: ['id', 'text', 'completed', 'createdAt'],
   properties: {
@@ -20,7 +20,25 @@ export const createTodoResponseSchema = {
 
 export const listTodosResponseSchema = {
   type: 'array',
-  items: createTodoResponseSchema,
+  items: todoResponseSchema,
+} as const
+
+export const patchTodoParamsSchema = {
+  type: 'object',
+  required: ['id'],
+  properties: {
+    id: { type: 'integer' },
+  },
+  additionalProperties: false,
+} as const
+
+export const patchTodoBodySchema = {
+  type: 'object',
+  required: ['completed'],
+  properties: {
+    completed: { type: 'boolean' },
+  },
+  additionalProperties: false,
 } as const
 
 export const errorResponseSchema = {

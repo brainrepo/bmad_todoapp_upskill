@@ -18,6 +18,14 @@ export function createTodo(db: BetterSqlite3.Database, text: string): Todo {
   return mapTodoRow(row)
 }
 
+export function toggleTodo(db: BetterSqlite3.Database, id: number, completed: boolean): Todo | null {
+  const row = db
+    .prepare('UPDATE todos SET completed = ? WHERE id = ? RETURNING id, text, completed, created_at')
+    .get(completed ? 1 : 0, id) as TodoRow | undefined
+
+  return row ? mapTodoRow(row) : null
+}
+
 export function getAllTodos(db: BetterSqlite3.Database): Todo[] {
   const rows = db
     .prepare('SELECT id, text, completed, created_at FROM todos ORDER BY created_at ASC')
