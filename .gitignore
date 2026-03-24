@@ -1,0 +1,23 @@
+# macOS
+.DS_Store
+
+# Tessl / Claude Code skills (vendored, auto-installed)
+.agents/skills/
+.claude/skills/
+skills-lock.json
+
+# Node.js
+node_modules/
+dist/
+
+# Test artifacts
+playwright-report/
+test-results/
+
+# Data
+bmad-todo/data/
+
+# Environment
+.env
+.env.*
+!.env.example
