@@ -4,7 +4,6 @@
 # Tessl / Claude Code skills (vendored, auto-installed)
 .agents/skills/
 .claude/skills/
-skills-lock.json
 
 # Node.js
 node_modules/
