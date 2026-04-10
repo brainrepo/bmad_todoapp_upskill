@@ -17,5 +17,10 @@ export default defineConfig({
     environment: 'happy-dom',
     setupFiles: './src/test-setup.ts',
     css: true,
+    coverage: {
+      provider: 'v8',
+      reportsDirectory: '../qa-reports/coverage-frontend',
+      reporter: ['text', 'html', 'json-summary'],
+    },
   },
 })

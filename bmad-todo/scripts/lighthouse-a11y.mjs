@@ -2,15 +2,21 @@
 /**
  * Accessibility audit against a running dev server.
  * Usage: LIGHTHOUSE_URL=http://localhost:5173 node scripts/lighthouse-a11y.mjs
+ * Report JSON: qa-reports/lighthouse-a11y.json (override with LIGHTHOUSE_REPORT_PATH)
  * Requires Node 22+ (matches lighthouse@13 engines).
  */
-import { writeFileSync } from 'node:fs'
-import { tmpdir } from 'node:os'
+import { mkdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
 
 const url = process.env['LIGHTHOUSE_URL'] ?? 'http://localhost:5173'
 const minScore = Number(process.env['LIGHTHOUSE_MIN_A11Y_SCORE'] ?? 90) / 100
+
+function defaultReportPath () {
+  const dir = join(process.cwd(), 'qa-reports')
+  mkdirSync(dir, { recursive: true })
+  return join(dir, 'lighthouse-a11y.json')
+}
 
 async function main () {
   const [{ default: lighthouse }, { launch }] = await Promise.all([
@@ -41,7 +47,8 @@ async function main () {
       throw new Error('Lighthouse accessibility category score missing')
     }
 
-    const outPath = join(tmpdir(), `lighthouse-a11y-${Date.now()}.json`)
+    const outPath =
+      process.env['LIGHTHOUSE_REPORT_PATH'] ?? defaultReportPath()
     writeFileSync(outPath, typeof runnerResult.report === 'string' ? runnerResult.report : JSON.stringify(lhr, null, 2))
 
     const pct = Math.round(score * 100)
