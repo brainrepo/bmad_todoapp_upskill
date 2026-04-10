@@ -74,5 +74,5 @@ development_status:
   5-1-responsive-layout: done
   5-2-keyboard-navigation: done
   5-3-screen-reader-aria-support: done
-  5-4-accessibility-testing-wcag-verification: backlog
+  5-4-accessibility-testing-wcag-verification: review
   epic-5-retrospective: optional

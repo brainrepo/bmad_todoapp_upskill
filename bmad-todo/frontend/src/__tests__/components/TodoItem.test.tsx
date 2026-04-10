@@ -168,12 +168,10 @@ describe('TodoItem', () => {
     expect(screen.getByRole('checkbox')).toHaveClass('min-h-[44px]')
   })
 
-  it('delete control is visible by default; lg hides until row hover (progressive affordance)', () => {
+  it('delete control stays visible at all breakpoints (contrast + predictable target)', () => {
     render(<TodoItem todo={activeTodo} onToggle={mockOnToggle} onDelete={mockOnDelete} />)
     const deleteButton = screen.getByLabelText('Delete task: Buy groceries')
-    expect(deleteButton).toHaveClass('opacity-100')
-    expect(deleteButton).toHaveClass('lg:opacity-0')
-    expect(deleteButton).toHaveClass('lg:group-hover:opacity-100')
+    expect(deleteButton.className).not.toMatch(/opacity-0/)
   })
 
   it('applies left border and surface hover on lg+ hover only', () => {

@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { assertNoCriticalOrSeriousViolations } from '../fixtures/a11y'
 import {
   createAndWaitForTodo,
   deleteTodo,
@@ -8,6 +9,10 @@ import {
   toggleTodo,
   uniqueText,
 } from '../fixtures/test-helpers'
+
+test.afterEach(async ({ page }) => {
+  await assertNoCriticalOrSeriousViolations(page)
+})
 
 test.describe('Journey 2: Returning User — Task Lifecycle', () => {
   test.describe('Complete a task', () => {

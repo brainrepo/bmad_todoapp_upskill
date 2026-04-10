@@ -1,0 +1,76 @@
+#!/usr/bin/env node
+/**
+ * Accessibility audit against a running dev server.
+ * Usage: LIGHTHOUSE_URL=http://localhost:5173 node scripts/lighthouse-a11y.mjs
+ * Requires Node 22+ (matches lighthouse@13 engines).
+ */
+import { writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { pathToFileURL } from 'node:url'
+
+const url = process.env['LIGHTHOUSE_URL'] ?? 'http://localhost:5173'
+const minScore = Number(process.env['LIGHTHOUSE_MIN_A11Y_SCORE'] ?? 90) / 100
+
+async function main () {
+  const [{ default: lighthouse }, { launch }] = await Promise.all([
+    import('lighthouse'),
+    import('chrome-launcher'),
+  ])
+
+  const chrome = await launch({
+    chromeFlags: ['--headless', '--no-sandbox', '--disable-gpu'],
+  })
+
+  try {
+    const runnerResult = await lighthouse(url, {
+      logLevel: process.env['CI'] ? 'error' : 'info',
+      output: 'json',
+      onlyCategories: ['accessibility'],
+      port: chrome.port,
+    })
+
+    if (runnerResult == null || runnerResult.lhr == null) {
+      throw new Error('Lighthouse returned no result')
+    }
+
+    const lhr = runnerResult.lhr
+    const cat = lhr.categories?.accessibility
+    const score = cat?.score
+    if (score == null) {
+      throw new Error('Lighthouse accessibility category score missing')
+    }
+
+    const outPath = join(tmpdir(), `lighthouse-a11y-${Date.now()}.json`)
+    writeFileSync(outPath, typeof runnerResult.report === 'string' ? runnerResult.report : JSON.stringify(lhr, null, 2))
+
+    const pct = Math.round(score * 100)
+    console.log(`Lighthouse accessibility score: ${pct} (min ${Math.round(minScore * 100)})`)
+    console.log(`Report: ${pathToFileURL(outPath).href}`)
+
+    if (score < minScore) {
+      throw new Error(
+        `Accessibility score ${pct} is below minimum ${Math.round(minScore * 100)}`,
+      )
+    }
+
+    const warnAudits = (cat.auditRefs ?? [])
+      .map((ref) => lhr.audits?.[ref.id])
+      .filter((a) => a != null && a.score != null && a.score > 0 && a.score < 1)
+    if (warnAudits.length > 0) {
+      console.warn('Partial accessibility audits (informational):')
+      for (const a of warnAudits) {
+        console.warn(`  - ${a.id}: ${a.title}`)
+      }
+    }
+
+    console.log('Lighthouse accessibility gate passed.')
+  } finally {
+    await chrome.kill()
+  }
+}
+
+main().catch((err) => {
+  console.error(err)
+  process.exitCode = 1
+})

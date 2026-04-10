@@ -1,5 +1,10 @@
 import { test, expect } from '@playwright/test'
+import { assertNoCriticalOrSeriousViolations } from '../fixtures/a11y'
 import { addTodo, expectTodoVisible, uniqueText } from '../fixtures/test-helpers'
+
+test.afterEach(async ({ page }) => {
+  await assertNoCriticalOrSeriousViolations(page)
+})
 
 test.describe('Journey 1: First-Time User', () => {
   test('input is auto-focused on page load', async ({ page }) => {
@@ -191,5 +196,34 @@ test.describe('Input Validation', () => {
 
     // The task should appear with trimmed text
     await expect(page.getByText(trimmedText)).toBeVisible()
+  })
+})
+
+test.describe('Reduced motion (Story 5.4)', () => {
+  test('disables transition durations on todo row when prefers-reduced-motion is reduce', async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await page.goto('/')
+    const taskText = uniqueText('Motion')
+    const responsePromise = page.waitForResponse(
+      (response) => response.url().includes('/api/todos') && response.status() === 201,
+    )
+    await addTodo(page, taskText)
+    await responsePromise
+
+    const row = page.getByRole('checkbox').filter({ hasText: taskText })
+    await expect(page.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches)).resolves.toBe(true)
+
+    const rowStyle = await row.evaluate((el) => {
+      const s = window.getComputedStyle(el)
+      return { transitionProperty: s.transitionProperty }
+    })
+    const props = rowStyle.transitionProperty.split(',').map((p) => p.trim())
+    const motionDisabled = props.length > 0 && props.every((p) => p === 'none')
+    expect(motionDisabled, `transitionProperty was ${rowStyle.transitionProperty}`).toBe(true)
+
+    await page.getByLabel(`Delete task: ${taskText}`).click()
+    await expect(page.getByText(taskText)).not.toBeVisible()
   })
 })

@@ -63,7 +63,7 @@ export const TodoItem = forwardRef<HTMLDivElement, TodoItemProps>(
           }`}
         >
           <span
-            className={`text-[1.125rem] font-light transition-all duration-300 motion-reduce:transition-none ${
+            className={`text-[1.125rem] font-light transition-colors duration-300 motion-reduce:transition-none ${
               todo.completed
                 ? 'text-text-secondary line-through italic'
                 : 'text-text-primary'
@@ -81,7 +81,7 @@ export const TodoItem = forwardRef<HTMLDivElement, TodoItemProps>(
           aria-label={`Delete task: ${todo.text}`}
           onClick={handleDelete}
           onKeyDown={handleDeleteKeyDown}
-          className="absolute right-2 top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center text-text-secondary text-lg hover:text-text-primary cursor-pointer opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-200 motion-reduce:transition-none outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-bg"
+          className="absolute right-2 top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center text-text-secondary text-lg hover:text-text-primary cursor-pointer transition-opacity duration-200 motion-reduce:transition-none outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-bg"
         >
           ×
         </button>

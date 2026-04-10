@@ -1,4 +1,9 @@
 import { test, expect } from '@playwright/test'
+import { assertNoCriticalOrSeriousViolations } from '../fixtures/a11y'
+
+test.afterEach(async ({ page }) => {
+  await assertNoCriticalOrSeriousViolations(page)
+})
 
 const viewports = [
   { width: 320, height: 800 },

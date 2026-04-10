@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { assertNoCriticalOrSeriousViolations } from '../fixtures/a11y'
 import {
   addTodo,
   createAndWaitForTodo,
@@ -8,6 +9,10 @@ import {
   toggleTodo,
   uniqueText,
 } from '../fixtures/test-helpers'
+
+test.afterEach(async ({ page }) => {
+  await assertNoCriticalOrSeriousViolations(page)
+})
 
 test.describe('Journey 3: Error & Edge Case Handling', () => {
   test('pressing Enter with empty input does not send POST /api/todos', async ({ page }) => {
