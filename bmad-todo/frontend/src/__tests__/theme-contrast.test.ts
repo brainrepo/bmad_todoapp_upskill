@@ -53,7 +53,7 @@ describe('theme contrast (epic Story 5.4)', () => {
     expect(r).toBeGreaterThanOrEqual(4.5)
   })
 
-  it('text-secondary on bg ~4.5:1 (AA)', () => {
+  it('text-secondary on bg: epic ~4.5:1, tokens ≥4.5:1 (center ~5.4:1 for current palette)', () => {
     const r = contrastRatio(THEME.textSecondary, THEME.bg)
     expectNear('secondary/bg', r, 5.4, 0.5)
     expect(r).toBeGreaterThanOrEqual(4.5)

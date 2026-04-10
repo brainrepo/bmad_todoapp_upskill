@@ -54,6 +54,23 @@ async function main () {
       )
     }
 
+    const failedBinaryAudits = (cat.auditRefs ?? [])
+      .map((ref) => {
+        const a = lhr.audits?.[ref.id]
+        if (a == null || a.score == null) return null
+        if (a.scoreDisplayMode !== 'binary') return null
+        if (a.score !== 0) return null
+        return { id: ref.id, title: a.title }
+      })
+      .filter(Boolean)
+
+    if (failedBinaryAudits.length > 0) {
+      const lines = failedBinaryAudits.map((a) => `  - ${a.id}: ${a.title}`).join('\n')
+      throw new Error(
+        `Lighthouse accessibility: ${failedBinaryAudits.length} failed audit(s) (binary score 0):\n${lines}`,
+      )
+    }
+
     const warnAudits = (cat.auditRefs ?? [])
       .map((ref) => lhr.audits?.[ref.id])
       .filter((a) => a != null && a.score != null && a.score > 0 && a.score < 1)
@@ -64,7 +81,7 @@ async function main () {
       }
     }
 
-    console.log('Lighthouse accessibility gate passed.')
+    console.log('Lighthouse accessibility gate passed (score + binary audits).')
   } finally {
     await chrome.kill()
   }

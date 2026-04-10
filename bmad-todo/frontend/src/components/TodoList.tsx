@@ -19,6 +19,13 @@ interface TodoListProps {
 
 const DELETE_FADE_MS = 200
 
+function getDeleteFadeDelayMs () {
+  if (typeof window === 'undefined') return DELETE_FADE_MS
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ? 0
+    : DELETE_FADE_MS
+}
+
 export function TodoList ({ onError, inputRef }: TodoListProps) {
   const { todos, isLoading, isError, isFetching, refetch } = useTodos()
   const toggleTodo = useToggleTodo(onError)
@@ -80,6 +87,7 @@ export function TodoList ({ onError, inputRef }: TodoListProps) {
 
     pendingDeleteIdRef.current = id
     setDeletingId(id)
+    const delayMs = getDeleteFadeDelayMs()
     deleteTimerRef.current = setTimeout(() => {
       deleteTimerRef.current = null
       pendingDeleteIdRef.current = null
@@ -88,7 +96,7 @@ export function TodoList ({ onError, inputRef }: TodoListProps) {
           setDeletingId((current) => (current === id ? null : current))
         },
       })
-    }, DELETE_FADE_MS)
+    }, delayMs)
   }
 
   const focusItem = (index: number) => {

@@ -1,6 +1,6 @@
 # Story 5.4: Accessibility Testing & WCAG Verification
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -77,7 +77,7 @@ Requires Node 22+ (matches `lighthouse@13` engines). With the app reachable at t
 
 `LIGHTHOUSE_URL=http://localhost:5173 npm run lighthouse:a11y`
 
-The script enforces accessibility category score ≥ 90 (default; override with `LIGHTHOUSE_MIN_A11Y_SCORE`). Lighthouse can be environment-dependent in CI; use the command above as the local gate.
+The script enforces accessibility category score ≥ 90 (default; override with `LIGHTHOUSE_MIN_A11Y_SCORE`) and fails if any **binary** accessibility audit scores `0` (maps to “no failed audits” / no critical-style failures in that category). Lighthouse can be environment-dependent in CI; use the command above as the local gate.
 
 ### Existing E2E layout
 
@@ -121,7 +121,7 @@ The script enforces accessibility category score ≥ 90 (default; override with 
 
 ## Story completion status
 
-- **review** — Implementation complete; ready for code review.
+- **done** — Code review follow-ups applied; story accepted.
 
 ## Dev Agent Record
 
@@ -136,6 +136,7 @@ Cursor agent (implementation)
 
 ### Completion Notes List
 
+- **Code review (post-merge):** Lighthouse script now fails on binary accessibility audits with score `0`; delete mutation delay uses `0ms` when `prefers-reduced-motion: reduce` (`TodoList`).
 - `e2e/fixtures/a11y.ts`: `AxeBuilder` analyze; fail on critical/serious; skip non-http URLs (unused `page` fixture).
 - All four E2E spec files: `test.afterEach` → `assertNoCriticalOrSeriousViolations`.
 - `frontend/src/__tests__/theme-contrast.test.ts`: WCAG luminance math aligned with `app.css` tokens.
@@ -154,5 +155,6 @@ Cursor agent (implementation)
 - `bmad-todo/e2e/tests/responsive-layout.spec.ts`
 - `bmad-todo/frontend/src/app.css`
 - `bmad-todo/frontend/src/components/TodoItem.tsx`
+- `bmad-todo/frontend/src/components/TodoList.tsx`
 - `bmad-todo/frontend/src/__tests__/theme-contrast.test.ts`
 - `bmad-todo/frontend/src/__tests__/components/TodoItem.test.tsx`
