@@ -59,10 +59,11 @@ describe('TodoList', () => {
     expect(container.innerHTML).toBe('')
   })
 
-  it('renders nothing when todos array is empty', () => {
+  it('renders EmptyState when todos array is empty', () => {
     mockUseTodos.mockReturnValue({ todos: [], isLoading: false, isError: false })
-    const { container } = render(<TodoList />)
-    expect(container.innerHTML).toBe('')
+    render(<TodoList />)
+    expect(screen.getByText('Nothing here yet')).toBeInTheDocument()
+    expect(screen.getByText('Type above and press Enter')).toBeInTheDocument()
   })
 
   it('calls toggle mutation when a todo is clicked', () => {

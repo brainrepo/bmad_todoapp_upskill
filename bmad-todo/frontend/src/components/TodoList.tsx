@@ -1,4 +1,5 @@
 import { useDeleteTodo, useTodos, useToggleTodo } from '../hooks/useTodos'
+import { EmptyState } from './EmptyState'
 import { TodoItem } from './TodoItem'
 
 export function TodoList() {
@@ -8,7 +9,7 @@ export function TodoList() {
 
   if (isLoading) return null
   if (isError) return null
-  if (todos.length === 0) return null
+  if (todos.length === 0) return <EmptyState />
 
   const handleToggle = (id: number, completed: boolean) => {
     toggleTodo.mutate({ id, completed })
