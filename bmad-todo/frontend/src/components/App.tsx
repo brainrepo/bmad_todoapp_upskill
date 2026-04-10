@@ -9,7 +9,7 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-bg text-text-primary font-sans">
-      <main className="mx-auto max-w-[640px] px-4 sm:px-12 py-16">
+      <main className="w-full max-w-none sm:max-w-[640px] sm:mx-auto px-4 sm:px-12 py-16">
         <AppHeader />
         <TodoInput onError={notify} />
         <div className="mt-6">

@@ -30,7 +30,7 @@ export function TodoItem({ todo, onToggle, onDelete, isExiting = false }: TodoIt
       aria-checked={todo.completed}
       tabIndex={0}
       onClick={handleClick}
-      className={`group relative flex flex-col pl-5 pr-14 py-4 border-l-2 border-transparent hover:border-border hover:bg-surface-hover cursor-pointer select-none transition-colors duration-300 transition-opacity duration-200 motion-reduce:transition-none ${
+      className={`group relative flex min-h-[44px] flex-col pl-5 pr-14 py-4 border-l-2 border-transparent lg:hover:border-border lg:hover:bg-surface-hover active:bg-surface-hover cursor-pointer select-none transition-colors duration-300 transition-opacity duration-200 motion-reduce:transition-none ${
         isExiting ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}
     >

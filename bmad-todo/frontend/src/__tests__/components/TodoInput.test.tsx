@@ -18,6 +18,11 @@ describe('TodoInput', () => {
     expect(screen.getByPlaceholderText('What needs doing?')).toBeInTheDocument()
   })
 
+  it('has minimum 44px height for touch target', () => {
+    render(<TodoInput />)
+    expect(screen.getByPlaceholderText('What needs doing?')).toHaveClass('min-h-[44px]')
+  })
+
   it('auto-focuses on mount', () => {
     render(<TodoInput />)
     expect(screen.getByPlaceholderText('What needs doing?')).toHaveFocus()

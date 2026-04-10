@@ -20,4 +20,15 @@ describe('App', () => {
     renderWithProviders(<App />)
     expect(screen.getByText('a simple list')).toBeInTheDocument()
   })
+
+  it('uses responsive shell layout on main (mobile full-width, sm centered max-width)', () => {
+    renderWithProviders(<App />)
+    const main = screen.getByRole('main')
+    expect(main).toHaveClass('w-full')
+    expect(main).toHaveClass('max-w-none')
+    expect(main).toHaveClass('sm:max-w-[640px]')
+    expect(main).toHaveClass('sm:mx-auto')
+    expect(main).toHaveClass('px-4')
+    expect(main).toHaveClass('sm:px-12')
+  })
 })

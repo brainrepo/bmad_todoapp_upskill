@@ -120,4 +120,24 @@ describe('TodoItem', () => {
     expect(deleteButton).toHaveClass('w-11')
     expect(deleteButton).toHaveClass('h-11')
   })
+
+  it('task row has min-height 44px for touch targets', () => {
+    render(<TodoItem todo={activeTodo} onToggle={mockOnToggle} onDelete={mockOnDelete} />)
+    expect(screen.getByRole('checkbox')).toHaveClass('min-h-[44px]')
+  })
+
+  it('delete control is visible by default; lg hides until row hover (progressive affordance)', () => {
+    render(<TodoItem todo={activeTodo} onToggle={mockOnToggle} onDelete={mockOnDelete} />)
+    const deleteButton = screen.getByLabelText('Delete task: Buy groceries')
+    expect(deleteButton).toHaveClass('opacity-100')
+    expect(deleteButton).toHaveClass('lg:opacity-0')
+    expect(deleteButton).toHaveClass('lg:group-hover:opacity-100')
+  })
+
+  it('applies left border and surface hover on lg+ hover only', () => {
+    render(<TodoItem todo={activeTodo} onToggle={mockOnToggle} onDelete={mockOnDelete} />)
+    const item = screen.getByRole('checkbox')
+    expect(item).toHaveClass('lg:hover:border-border')
+    expect(item).toHaveClass('lg:hover:bg-surface-hover')
+  })
 })
