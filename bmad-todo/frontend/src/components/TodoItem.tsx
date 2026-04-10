@@ -5,9 +5,10 @@ interface TodoItemProps {
   todo: Todo
   onToggle: (id: number, completed: boolean) => void
   onDelete: (id: number) => void
+  isExiting?: boolean
 }
 
-export function TodoItem({ todo, onToggle, onDelete }: TodoItemProps) {
+export function TodoItem({ todo, onToggle, onDelete, isExiting = false }: TodoItemProps) {
   const formattedDate = new Date(todo.createdAt).toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',
@@ -29,7 +30,9 @@ export function TodoItem({ todo, onToggle, onDelete }: TodoItemProps) {
       aria-checked={todo.completed}
       tabIndex={0}
       onClick={handleClick}
-      className="group relative flex flex-col pl-5 pr-14 py-4 border-l-2 border-transparent hover:border-border hover:bg-surface-hover transition-all duration-300 motion-reduce:transition-none cursor-pointer select-none"
+      className={`group relative flex flex-col pl-5 pr-14 py-4 border-l-2 border-transparent hover:border-border hover:bg-surface-hover cursor-pointer select-none transition-colors duration-300 transition-opacity duration-200 motion-reduce:transition-none ${
+        isExiting ? 'opacity-0 pointer-events-none' : 'opacity-100'
+      }`}
     >
       <span
         className={`text-[1.125rem] font-light transition-all duration-300 motion-reduce:transition-none ${

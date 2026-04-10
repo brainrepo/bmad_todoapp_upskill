@@ -3,6 +3,19 @@ import { QUERY_KEYS } from '../constants'
 import { createTodo, deleteTodo, getTodos, toggleTodo } from '../api/todos'
 import type { Todo } from '../types'
 
+type TodoListSnapshot = Todo[] | undefined
+
+export type CreateTodoContext = {
+  previous: TodoListSnapshot
+  optimisticId: number
+}
+
+export type ToggleDeleteMutationContext = {
+  previous: TodoListSnapshot
+}
+
+type ToggleVariables = { id: number; completed: boolean }
+
 export function useTodos() {
   const { data: todos = [], isLoading, isError, isFetching, refetch } = useQuery({
     queryKey: QUERY_KEYS.TODOS,
@@ -14,8 +27,8 @@ export function useTodos() {
 export function useCreateTodo(onError?: (message: string) => void) {
   const queryClient = useQueryClient()
 
-  return useMutation({
-    mutationFn: createTodo,
+  return useMutation<Todo, Error, string, CreateTodoContext>({
+    mutationFn: (text: string) => createTodo(text),
     onMutate: async (text) => {
       await queryClient.cancelQueries({ queryKey: QUERY_KEYS.TODOS })
       const previous = queryClient.getQueryData<Todo[]>(QUERY_KEYS.TODOS)
@@ -32,12 +45,18 @@ export function useCreateTodo(onError?: (message: string) => void) {
         optimisticTodo,
       ])
 
-      return { previous }
+      return { previous, optimisticId: optimisticTodo.id }
+    },
+    onSuccess: (serverTodo, _text, context) => {
+      const optimisticId = context?.optimisticId
+      if (optimisticId === undefined) return
+      queryClient.setQueryData<Todo[]>(QUERY_KEYS.TODOS, (old) => {
+        if (!old) return [serverTodo]
+        return old.map((t) => (t.id === optimisticId ? serverTodo : t))
+      })
     },
     onError: (_err, _text, context) => {
-      if (context?.previous) {
-        queryClient.setQueryData(QUERY_KEYS.TODOS, context.previous)
-      }
+      queryClient.setQueryData(QUERY_KEYS.TODOS, context?.previous ?? [])
       onError?.('Task not saved — try again')
     },
     onSettled: () => {
@@ -49,10 +68,18 @@ export function useCreateTodo(onError?: (message: string) => void) {
 export function useToggleTodo(onError?: (message: string) => void) {
   const queryClient = useQueryClient()
 
-  return useMutation({
-    mutationFn: ({ id, completed }: { id: number; completed: boolean }) =>
-      toggleTodo(id, completed),
-    onError: () => {
+  return useMutation<Todo, Error, ToggleVariables, ToggleDeleteMutationContext>({
+    mutationFn: ({ id, completed }) => toggleTodo(id, completed),
+    onMutate: async ({ id, completed }) => {
+      await queryClient.cancelQueries({ queryKey: QUERY_KEYS.TODOS })
+      const previous = queryClient.getQueryData<Todo[]>(QUERY_KEYS.TODOS)
+      queryClient.setQueryData<Todo[]>(QUERY_KEYS.TODOS, (old) =>
+        (old ?? []).map((t) => (t.id === id ? { ...t, completed } : t)),
+      )
+      return { previous }
+    },
+    onError: (_err, _vars, context) => {
+      queryClient.setQueryData(QUERY_KEYS.TODOS, context?.previous ?? [])
       onError?.('Update failed — try again')
     },
     onSettled: () => {
@@ -64,9 +91,18 @@ export function useToggleTodo(onError?: (message: string) => void) {
 export function useDeleteTodo(onError?: (message: string) => void) {
   const queryClient = useQueryClient()
 
-  return useMutation({
+  return useMutation<void, Error, number, ToggleDeleteMutationContext>({
     mutationFn: (id: number) => deleteTodo(id),
-    onError: () => {
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: QUERY_KEYS.TODOS })
+      const previous = queryClient.getQueryData<Todo[]>(QUERY_KEYS.TODOS)
+      queryClient.setQueryData<Todo[]>(QUERY_KEYS.TODOS, (old) =>
+        (old ?? []).filter((t) => t.id !== id),
+      )
+      return { previous }
+    },
+    onError: (_err, _id, context) => {
+      queryClient.setQueryData(QUERY_KEYS.TODOS, context?.previous ?? [])
       onError?.('Couldn\'t delete — try again')
     },
     onSettled: () => {

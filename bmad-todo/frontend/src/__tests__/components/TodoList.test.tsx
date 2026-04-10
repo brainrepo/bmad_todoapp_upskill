@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, act } from '@testing-library/react'
 import { TodoList } from '../../components/TodoList'
 
 const mockUseTodos = vi.fn()
@@ -107,18 +107,53 @@ describe('TodoList', () => {
   })
 
   it('calls delete mutation when × button is clicked', () => {
+    vi.useFakeTimers()
     mockUseTodos.mockReturnValue(mockTodosState({ todos: mockTodos }))
     render(<TodoList />)
     const deleteButton = screen.getByLabelText('Delete task: First task')
     fireEvent.click(deleteButton)
+    expect(mockDeleteMutate).not.toHaveBeenCalled()
+    act(() => {
+      vi.advanceTimersByTime(200)
+    })
+    expect(mockDeleteMutate).toHaveBeenCalledWith(
+      1,
+      expect.objectContaining({ onSettled: expect.any(Function) }),
+    )
+    vi.useRealTimers()
+  })
+
+  it('flushes pending delete when × is clicked on another task before fade completes', () => {
+    vi.useFakeTimers()
+    mockUseTodos.mockReturnValue(mockTodosState({ todos: mockTodos }))
+    render(<TodoList />)
+    fireEvent.click(screen.getByLabelText('Delete task: First task'))
+    fireEvent.click(screen.getByLabelText('Delete task: Second task'))
+    expect(mockDeleteMutate).toHaveBeenCalledTimes(1)
     expect(mockDeleteMutate).toHaveBeenCalledWith(1)
+    mockDeleteMutate.mockClear()
+    act(() => {
+      vi.advanceTimersByTime(200)
+    })
+    expect(mockDeleteMutate).toHaveBeenCalledTimes(1)
+    expect(mockDeleteMutate).toHaveBeenCalledWith(
+      2,
+      expect.objectContaining({ onSettled: expect.any(Function) }),
+    )
+    vi.useRealTimers()
   })
 
   it('does not trigger toggle when × button is clicked', () => {
+    vi.useFakeTimers()
     mockUseTodos.mockReturnValue(mockTodosState({ todos: mockTodos }))
     render(<TodoList />)
     const deleteButton = screen.getByLabelText('Delete task: First task')
     fireEvent.click(deleteButton)
     expect(mockToggleMutate).not.toHaveBeenCalled()
+    act(() => {
+      vi.advanceTimersByTime(200)
+    })
+    expect(mockToggleMutate).not.toHaveBeenCalled()
+    vi.useRealTimers()
   })
 })
