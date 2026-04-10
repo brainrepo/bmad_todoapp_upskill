@@ -54,13 +54,13 @@ development_status:
   2-5-full-stack-task-creation-persistence-verification: done
   epic-2-retrospective: done
 
-  epic-3: in-progress
+  epic-3: done
   3-1-toggle-todo-completion-api-endpoint: done
   3-2-delete-todo-api-endpoint: done
   3-3-task-completion-toggle-ui: done
   3-4-task-deletion-ui: done
   3-5-task-lifecycle-e2e-tests: done
-  epic-3-retrospective: optional
+  epic-3-retrospective: done
 
   epic-4: backlog
   4-1-empty-state: backlog
