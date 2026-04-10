@@ -11,10 +11,10 @@ interface TodoItemProps {
   onDelete: (id: number) => void
   isExiting?: boolean
   tabIndex?: number
-  onRowKeyDown?: (e: KeyboardEvent<HTMLLIElement>) => void
+  onRowKeyDown?: (e: KeyboardEvent<HTMLDivElement>) => void
 }
 
-export const TodoItem = forwardRef<HTMLLIElement, TodoItemProps>(
+export const TodoItem = forwardRef<HTMLDivElement, TodoItemProps>(
   function TodoItem (
     {
       todo,
@@ -50,29 +50,31 @@ export const TodoItem = forwardRef<HTMLLIElement, TodoItemProps>(
     }
 
     return (
-      <li
-        ref={ref}
-        role="checkbox"
-        aria-checked={todo.completed}
-        tabIndex={tabIndex}
-        onClick={handleClick}
-        onKeyDown={onRowKeyDown}
-        className={`group relative flex min-h-[44px] flex-col pl-5 pr-14 py-4 border-l-2 border-transparent lg:hover:border-border lg:hover:bg-surface-hover active:bg-surface-hover cursor-pointer select-none transition-colors duration-300 transition-opacity duration-200 motion-reduce:transition-none outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-bg ${
-          isExiting ? 'opacity-0 pointer-events-none' : 'opacity-100'
-        }`}
-      >
-        <span
-          className={`text-[1.125rem] font-light transition-all duration-300 motion-reduce:transition-none ${
-            todo.completed
-              ? 'text-text-secondary line-through italic'
-              : 'text-text-primary'
+      <li className="group relative min-h-[44px]">
+        <div
+          ref={ref}
+          role="checkbox"
+          aria-checked={todo.completed}
+          tabIndex={tabIndex}
+          onClick={handleClick}
+          onKeyDown={onRowKeyDown}
+          className={`flex min-h-[44px] flex-col pl-5 pr-14 py-4 border-l-2 border-transparent lg:hover:border-border lg:hover:bg-surface-hover active:bg-surface-hover cursor-pointer select-none transition-colors duration-300 transition-opacity duration-200 motion-reduce:transition-none outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-bg ${
+            isExiting ? 'opacity-0 pointer-events-none' : 'opacity-100'
           }`}
         >
-          {todo.text}
-        </span>
-        <span className="text-[0.6875rem] font-normal uppercase tracking-[0.05em] text-text-placeholder mt-1">
-          {formattedDate}
-        </span>
+          <span
+            className={`text-[1.125rem] font-light transition-all duration-300 motion-reduce:transition-none ${
+              todo.completed
+                ? 'text-text-secondary line-through italic'
+                : 'text-text-primary'
+            }`}
+          >
+            {todo.text}
+          </span>
+          <span className="text-[0.6875rem] font-normal uppercase tracking-[0.05em] text-text-placeholder mt-1">
+            {formattedDate}
+          </span>
+        </div>
         <button
           type="button"
           tabIndex={-1}

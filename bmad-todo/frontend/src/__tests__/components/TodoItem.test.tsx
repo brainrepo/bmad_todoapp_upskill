@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { TodoItem } from '../../components/TodoItem'
@@ -20,10 +21,22 @@ const completedTodo: Todo = {
 const mockOnToggle = vi.fn()
 const mockOnDelete = vi.fn()
 
+function renderInList (ui: ReactElement) {
+  return render(<ul>{ui}</ul>)
+}
+
 describe('TodoItem', () => {
   beforeEach(() => {
     mockOnToggle.mockReset()
     mockOnDelete.mockReset()
+  })
+
+  it('exposes listitem and checkbox roles per ARIA structure', () => {
+    renderInList(
+      <TodoItem todo={activeTodo} onToggle={mockOnToggle} onDelete={mockOnDelete} />,
+    )
+    expect(screen.getByRole('listitem')).toBeInTheDocument()
+    expect(screen.getByRole('checkbox')).toHaveAttribute('aria-checked', 'false')
   })
 
   it('renders active todo text in primary color without strikethrough', () => {

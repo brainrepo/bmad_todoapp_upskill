@@ -11,6 +11,11 @@ function renderWithProviders(ui: React.ReactElement) {
 }
 
 describe('App', () => {
+  it('has a single main landmark wrapping primary content', () => {
+    renderWithProviders(<App />)
+    expect(screen.getAllByRole('main')).toHaveLength(1)
+  })
+
   it('renders the app title', () => {
     renderWithProviders(<App />)
     expect(screen.getByText('things to do')).toBeInTheDocument()

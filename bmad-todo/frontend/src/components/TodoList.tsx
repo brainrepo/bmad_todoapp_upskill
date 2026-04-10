@@ -27,7 +27,7 @@ export function TodoList ({ onError, inputRef }: TodoListProps) {
   const deleteTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const pendingDeleteIdRef = useRef<number | null>(null)
   const [rovingIndex, setRovingIndex] = useState(0)
-  const itemRefs = useRef<(HTMLLIElement | null)[]>([])
+  const itemRefs = useRef<(HTMLDivElement | null)[]>([])
   const prevTodosLengthRef = useRef(0)
   const todoIdsKey = todos.map((t) => t.id).join(',')
 
@@ -99,7 +99,7 @@ export function TodoList ({ onError, inputRef }: TodoListProps) {
   }
 
   const handleRowKeyDown = (
-    e: KeyboardEvent<HTMLLIElement>,
+    e: KeyboardEvent<HTMLDivElement>,
     index: number,
   ) => {
     if (e.key === 'ArrowDown') {
@@ -128,8 +128,21 @@ export function TodoList ({ onError, inputRef }: TodoListProps) {
     }
   }
 
-  if (isLoading) return <LoadingState />
-  if (isError && isFetching) return <LoadingState />
+  if (isLoading || (isError && isFetching)) {
+    return (
+      <ul
+        role="list"
+        aria-label="Task list"
+        aria-live="polite"
+        aria-busy={true}
+        className="list-none divide-y divide-border"
+      >
+        <li className="py-12 text-center">
+          <LoadingState />
+        </li>
+      </ul>
+    )
+  }
   if (isError) return <ErrorState onRetry={refetch} />
   if (todos.length === 0) return <EmptyState />
 

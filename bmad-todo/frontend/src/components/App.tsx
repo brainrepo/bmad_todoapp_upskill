@@ -17,8 +17,8 @@ export function App () {
         <div className="mt-6">
           <TodoList onError={notify} inputRef={todoInputRef} />
         </div>
+        <ErrorNotification message={errorMessage} />
       </main>
-      <ErrorNotification message={errorMessage} />
     </div>
   )
 }

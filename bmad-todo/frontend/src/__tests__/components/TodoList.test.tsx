@@ -67,6 +67,14 @@ describe('TodoList', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument()
   })
 
+  it('sets aria-live and aria-busy on the list region while loading', () => {
+    mockUseTodos.mockReturnValue(mockTodosState({ isLoading: true }))
+    render(<TodoList />)
+    const list = screen.getByRole('list', { name: 'Task list' })
+    expect(list).toHaveAttribute('aria-live', 'polite')
+    expect(list).toHaveAttribute('aria-busy', 'true')
+  })
+
   it('renders ErrorState on error with retry', () => {
     mockUseTodos.mockReturnValue(mockTodosState({ isError: true }))
     render(<TodoList />)
