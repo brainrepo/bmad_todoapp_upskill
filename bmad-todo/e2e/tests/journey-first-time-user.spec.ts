@@ -1,9 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { addTodo, expectTodoVisible } from '../fixtures/test-helpers'
-
-function uniqueText(base: string) {
-  return `${base}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`
-}
+import { addTodo, expectTodoVisible, uniqueText } from '../fixtures/test-helpers'
 
 test.describe('Journey 1: First-Time User', () => {
   test('input is auto-focused on page load', async ({ page }) => {

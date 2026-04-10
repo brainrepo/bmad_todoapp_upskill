@@ -1,25 +1,13 @@
 import { test, expect } from '@playwright/test'
 import {
-  addTodo,
+  createAndWaitForTodo,
   deleteTodo,
   expectTodoActive,
   expectTodoCompleted,
   expectTodoVisible,
-  getTodoItem,
   toggleTodo,
+  uniqueText,
 } from '../fixtures/test-helpers'
-
-function uniqueText(base: string) {
-  return `${base}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`
-}
-
-async function createAndWaitForTodo(page: import('@playwright/test').Page, text: string) {
-  const responsePromise = page.waitForResponse(
-    (response) => response.url().includes('/api/todos') && response.status() === 201,
-  )
-  await addTodo(page, text)
-  await responsePromise
-}
 
 test.describe('Journey 2: Returning User — Task Lifecycle', () => {
   test.describe('Complete a task', () => {
@@ -50,8 +38,12 @@ test.describe('Journey 2: Returning User — Task Lifecycle', () => {
       const patchPromise = page.waitForResponse(
         (response) => response.url().includes('/api/todos/') && response.request().method() === 'PATCH',
       )
+      const refetchPromise = page.waitForResponse(
+        (response) => response.url().includes('/api/todos') && response.request().method() === 'GET' && response.status() === 200,
+      )
       await toggleTodo(page, taskText)
       await patchPromise
+      await refetchPromise
       await expectTodoCompleted(page, taskText)
 
       // Refresh and verify persistence
@@ -100,8 +92,12 @@ test.describe('Journey 2: Returning User — Task Lifecycle', () => {
       const patchPromise2 = page.waitForResponse(
         (response) => response.url().includes('/api/todos/') && response.request().method() === 'PATCH',
       )
+      const refetchPromise = page.waitForResponse(
+        (response) => response.url().includes('/api/todos') && response.request().method() === 'GET' && response.status() === 200,
+      )
       await toggleTodo(page, taskText)
       await patchPromise2
+      await refetchPromise
       await expectTodoActive(page, taskText)
 
       // Refresh and verify persistence

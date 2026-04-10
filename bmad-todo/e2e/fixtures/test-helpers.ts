@@ -1,5 +1,17 @@
 import { type Page, expect } from '@playwright/test'
 
+export function uniqueText(base: string) {
+  return `${base}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`
+}
+
+export async function createAndWaitForTodo(page: Page, text: string) {
+  const responsePromise = page.waitForResponse(
+    (response) => response.url().includes('/api/todos') && response.status() === 201,
+  )
+  await addTodo(page, text)
+  await responsePromise
+}
+
 export async function addTodo(page: Page, text: string) {
   const input = page.getByPlaceholder('What needs doing?')
   await input.fill(text)
