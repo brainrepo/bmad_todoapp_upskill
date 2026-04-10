@@ -62,12 +62,12 @@ development_status:
   3-5-task-lifecycle-e2e-tests: done
   epic-3-retrospective: done
 
-  epic-4: in-progress
+  epic-4: done
   4-1-empty-state: done
   4-2-loading-state: done
   4-3-error-state-error-notification: done
-  4-4-optimistic-updates-rollback: backlog
-  4-5-error-edge-case-e2e-tests: backlog
+  4-4-optimistic-updates-rollback: done
+  4-5-error-edge-case-e2e-tests: done
   epic-4-retrospective: optional
 
   epic-5: backlog

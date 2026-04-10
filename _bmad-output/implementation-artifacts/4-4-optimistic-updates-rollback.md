@@ -1,6 +1,6 @@
 # Story 4.4: Optimistic Updates & Rollback
 
-Status: review
+Status: done
 
 <!-- Validation: optional — run validate-create-story before dev-story. -->
 
@@ -171,7 +171,7 @@ Files to touch (expected):
 
 ## Story completion status
 
-- Implementation complete — `4-4-optimistic-updates-rollback` → **review** in `sprint-status.yaml`
+- Implementation complete — `4-4-optimistic-updates-rollback` → **done** in `sprint-status.yaml`; Epic 4 all stories **done**
 
 ## Change Log
 
