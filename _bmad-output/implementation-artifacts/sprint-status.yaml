@@ -68,7 +68,7 @@ development_status:
   4-3-error-state-error-notification: done
   4-4-optimistic-updates-rollback: done
   4-5-error-edge-case-e2e-tests: done
-  epic-4-retrospective: optional
+  epic-4-retrospective: done
 
   epic-5: backlog
   5-1-responsive-layout: backlog

@@ -51,3 +51,11 @@ using newman
 sometime we have a step in the epix that havr to be done by the qa and the dev alreay did
 
 ---
+
+composer 2 fast does not stop when creating stories, created 2 stories while i just asked for one
+
+---
+
+composer 2 . sometimes it forgets to mark the ticlet as done
+
+
