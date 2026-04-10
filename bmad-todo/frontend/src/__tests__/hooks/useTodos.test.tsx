@@ -2,13 +2,15 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { renderHook, act, waitFor } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import type { ReactNode } from 'react'
-import { useCreateTodo, useTodos, useToggleTodo } from '../../hooks/useTodos'
+import { useCreateTodo, useDeleteTodo, useTodos, useToggleTodo } from '../../hooks/useTodos'
 
 const mockCreateTodo = vi.fn()
+const mockDeleteTodo = vi.fn()
 const mockGetTodos = vi.fn()
 const mockToggleTodo = vi.fn()
 vi.mock('../../api/todos', () => ({
   createTodo: (...args: unknown[]) => mockCreateTodo(...args),
+  deleteTodo: (...args: unknown[]) => mockDeleteTodo(...args),
   getTodos: () => mockGetTodos(),
   toggleTodo: (...args: unknown[]) => mockToggleTodo(...args),
 }))
@@ -225,6 +227,84 @@ describe('useToggleTodo', () => {
     })
 
     // After settled (even on error), the query should be invalidated
+    await waitFor(() => {
+      const state = queryClient.getQueryState(['todos'])
+      expect(state?.isInvalidated).toBe(true)
+    })
+  })
+})
+
+describe('useDeleteTodo', () => {
+  beforeEach(() => {
+    mockDeleteTodo.mockReset()
+  })
+
+  it('calls deleteTodo API with id', async () => {
+    mockDeleteTodo.mockResolvedValueOnce(undefined)
+
+    const { result } = renderHook(() => useDeleteTodo(), { wrapper: createWrapper() })
+
+    act(() => {
+      result.current.mutate(1)
+    })
+
+    await waitFor(() => {
+      expect(mockDeleteTodo).toHaveBeenCalledWith(1)
+    })
+  })
+
+  it('invalidates todos query on settled after success', async () => {
+    mockDeleteTodo.mockResolvedValueOnce(undefined)
+    mockGetTodos.mockResolvedValue([])
+
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    })
+    queryClient.setQueryData(['todos'], [{ id: 1, text: 'Test', completed: false, createdAt: '2026-03-07' }])
+
+    function Wrapper({ children }: { children: ReactNode }) {
+      return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    }
+
+    const { result } = renderHook(() => useDeleteTodo(), { wrapper: Wrapper })
+
+    act(() => {
+      result.current.mutate(1)
+    })
+
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBe(true)
+    })
+
+    await waitFor(() => {
+      const state = queryClient.getQueryState(['todos'])
+      expect(state?.isInvalidated).toBe(true)
+    })
+  })
+
+  it('invalidates todos query on settled after error', async () => {
+    mockDeleteTodo.mockRejectedValueOnce(new Error('Network error'))
+    mockGetTodos.mockResolvedValue([])
+
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    })
+    queryClient.setQueryData(['todos'], [{ id: 1, text: 'Test', completed: false, createdAt: '2026-03-07' }])
+
+    function Wrapper({ children }: { children: ReactNode }) {
+      return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    }
+
+    const { result } = renderHook(() => useDeleteTodo(), { wrapper: Wrapper })
+
+    act(() => {
+      result.current.mutate(1)
+    })
+
+    await waitFor(() => {
+      expect(result.current.isError).toBe(true)
+    })
+
     await waitFor(() => {
       const state = queryClient.getQueryState(['todos'])
       expect(state?.isInvalidated).toBe(true)

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { createTodo, getTodos, toggleTodo } from '../../api/todos'
+import { createTodo, deleteTodo, getTodos, toggleTodo } from '../../api/todos'
 
 const mockFetch = vi.fn()
 vi.stubGlobal('fetch', mockFetch)
@@ -104,6 +104,48 @@ describe('toggleTodo API', () => {
     })
 
     await expect(toggleTodo(1, true)).rejects.toThrow('Failed to update todo')
+  })
+})
+
+describe('deleteTodo API', () => {
+  beforeEach(() => {
+    mockFetch.mockReset()
+  })
+
+  it('sends DELETE /api/todos/:id with no body and returns void on 204', async () => {
+    const mockJson = vi.fn()
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      status: 204,
+      json: mockJson,
+    })
+
+    await deleteTodo(1)
+
+    expect(mockFetch).toHaveBeenCalledWith('/api/todos/1', {
+      method: 'DELETE',
+    })
+    expect(mockJson).not.toHaveBeenCalled()
+  })
+
+  it('throws with server error message on 404', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: false,
+      status: 404,
+      json: () => Promise.resolve({ statusCode: 404, error: 'Not Found', message: 'Todo not found' }),
+    })
+
+    await expect(deleteTodo(999)).rejects.toThrow('Todo not found')
+  })
+
+  it('throws generic message when server error response is not JSON', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: false,
+      status: 500,
+      json: () => Promise.reject(new Error('not json')),
+    })
+
+    await expect(deleteTodo(1)).rejects.toThrow('Failed to delete todo')
   })
 })
 

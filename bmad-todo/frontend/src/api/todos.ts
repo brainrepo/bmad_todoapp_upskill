@@ -27,6 +27,16 @@ export async function toggleTodo(id: number, completed: boolean): Promise<Todo> 
   return response.json()
 }
 
+export async function deleteTodo(id: number): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/todos/${id}`, {
+    method: 'DELETE',
+  })
+  if (!response.ok) {
+    const body = await response.json().catch(() => null)
+    throw new Error(body?.message ?? 'Failed to delete todo')
+  }
+}
+
 export async function getTodos(): Promise<Todo[]> {
   const response = await fetch(`${API_BASE_URL}/todos`)
   if (!response.ok) {

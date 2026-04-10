@@ -3,11 +3,13 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { TodoList } from '../../components/TodoList'
 
 const mockUseTodos = vi.fn()
-const mockMutate = vi.fn()
+const mockToggleMutate = vi.fn()
+const mockDeleteMutate = vi.fn()
 
 vi.mock('../../hooks/useTodos', () => ({
   useTodos: () => mockUseTodos(),
-  useToggleTodo: () => ({ mutate: mockMutate }),
+  useToggleTodo: () => ({ mutate: mockToggleMutate }),
+  useDeleteTodo: () => ({ mutate: mockDeleteMutate }),
 }))
 
 const mockTodos = [
@@ -18,7 +20,8 @@ const mockTodos = [
 describe('TodoList', () => {
   beforeEach(() => {
     mockUseTodos.mockReset()
-    mockMutate.mockReset()
+    mockToggleMutate.mockReset()
+    mockDeleteMutate.mockReset()
   })
 
   it('renders all todos in a list', () => {
@@ -68,10 +71,26 @@ describe('TodoList', () => {
     const items = screen.getAllByRole('checkbox')
 
     fireEvent.click(items[0])
-    expect(mockMutate).toHaveBeenCalledWith({ id: 1, completed: true })
+    expect(mockToggleMutate).toHaveBeenCalledWith({ id: 1, completed: true })
 
-    mockMutate.mockClear()
+    mockToggleMutate.mockClear()
     fireEvent.click(items[1])
-    expect(mockMutate).toHaveBeenCalledWith({ id: 2, completed: false })
+    expect(mockToggleMutate).toHaveBeenCalledWith({ id: 2, completed: false })
+  })
+
+  it('calls delete mutation when × button is clicked', () => {
+    mockUseTodos.mockReturnValue({ todos: mockTodos, isLoading: false, isError: false })
+    render(<TodoList />)
+    const deleteButton = screen.getByLabelText('Delete task: First task')
+    fireEvent.click(deleteButton)
+    expect(mockDeleteMutate).toHaveBeenCalledWith(1)
+  })
+
+  it('does not trigger toggle when × button is clicked', () => {
+    mockUseTodos.mockReturnValue({ todos: mockTodos, isLoading: false, isError: false })
+    render(<TodoList />)
+    const deleteButton = screen.getByLabelText('Delete task: First task')
+    fireEvent.click(deleteButton)
+    expect(mockToggleMutate).not.toHaveBeenCalled()
   })
 })

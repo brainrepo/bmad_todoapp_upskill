@@ -58,7 +58,7 @@ development_status:
   3-1-toggle-todo-completion-api-endpoint: done
   3-2-delete-todo-api-endpoint: done
   3-3-task-completion-toggle-ui: done
-  3-4-task-deletion-ui: backlog
+  3-4-task-deletion-ui: done
   3-5-task-lifecycle-e2e-tests: backlog
   epic-3-retrospective: optional
 
