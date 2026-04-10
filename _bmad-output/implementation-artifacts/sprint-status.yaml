@@ -72,7 +72,7 @@ development_status:
 
   epic-5: in-progress
   5-1-responsive-layout: done
-  5-2-keyboard-navigation: backlog
+  5-2-keyboard-navigation: done
   5-3-screen-reader-aria-support: backlog
   5-4-accessibility-testing-wcag-verification: backlog
   epic-5-retrospective: optional

@@ -9,7 +9,7 @@ export function ErrorState({ onRetry }: ErrorStateProps) {
       <button
         type="button"
         onClick={onRetry}
-        className="text-sm text-accent hover:underline cursor-pointer mt-2"
+        className="text-sm text-accent hover:underline cursor-pointer mt-2 outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-bg rounded-sm"
       >
         Try again
       </button>

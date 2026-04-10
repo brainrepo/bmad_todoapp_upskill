@@ -21,6 +21,15 @@ describe('ErrorState', () => {
     expect(link).toHaveClass('text-accent', 'cursor-pointer')
   })
 
+  it('shows visible focus ring on Try again (keyboard / a11y)', () => {
+    render(<ErrorState onRetry={vi.fn()} />)
+    const btn = screen.getByRole('button', { name: 'Try again' })
+    expect(btn).toHaveClass('focus:ring-2')
+    expect(btn).toHaveClass('focus:ring-accent')
+    expect(btn).toHaveClass('focus:ring-offset-2')
+    expect(btn).toHaveClass('focus:ring-offset-bg')
+  })
+
   it('calls onRetry when "Try again" is clicked', () => {
     const mockRetry = vi.fn()
     render(<ErrorState onRetry={mockRetry} />)

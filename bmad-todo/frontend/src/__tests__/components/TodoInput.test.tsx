@@ -97,4 +97,13 @@ describe('TodoInput', () => {
     render(<TodoInput />)
     expect(screen.getByLabelText('Add a new task')).toBeInTheDocument()
   })
+
+  it('uses visible focus ring (2px accent, 2px offset)', () => {
+    render(<TodoInput />)
+    const input = screen.getByLabelText('Add a new task')
+    expect(input).toHaveClass('focus:ring-2')
+    expect(input).toHaveClass('focus:ring-accent')
+    expect(input).toHaveClass('focus:ring-offset-2')
+    expect(input).toHaveClass('focus:ring-offset-bg')
+  })
 })

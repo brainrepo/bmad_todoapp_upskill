@@ -87,6 +87,35 @@ describe('TodoItem', () => {
     expect(item).toHaveAttribute('tabindex', '0')
   })
 
+  it('supports roving tabindex when tabIndex is -1', () => {
+    render(
+      <TodoItem
+        todo={activeTodo}
+        onToggle={mockOnToggle}
+        onDelete={mockOnDelete}
+        tabIndex={-1}
+      />,
+    )
+    expect(screen.getByRole('checkbox')).toHaveAttribute('tabindex', '-1')
+  })
+
+  it('shows focus ring classes on the task row', () => {
+    render(<TodoItem todo={activeTodo} onToggle={mockOnToggle} onDelete={mockOnDelete} />)
+    const item = screen.getByRole('checkbox')
+    expect(item).toHaveClass('focus:ring-2')
+    expect(item).toHaveClass('focus:ring-accent')
+    expect(item).toHaveClass('focus:ring-offset-2')
+    expect(item).toHaveClass('focus:ring-offset-bg')
+  })
+
+  it('sets delete button tabIndex to -1 for roving list focus', () => {
+    render(<TodoItem todo={activeTodo} onToggle={mockOnToggle} onDelete={mockOnDelete} />)
+    expect(screen.getByLabelText('Delete task: Buy groceries')).toHaveAttribute(
+      'tabindex',
+      '-1',
+    )
+  })
+
   it('does not call onToggle when not clicked', () => {
     render(<TodoItem todo={activeTodo} onToggle={mockOnToggle} onDelete={mockOnDelete} />)
     expect(mockOnToggle).not.toHaveBeenCalled()
