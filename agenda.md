@@ -1,61 +1,35 @@
-1.0 The system recognized that the database schema was simple enough that a separate migration system wasn’t necessary, so it created the schema directly within the plugin. If the database structure were more complex or required multiple tables, introducing a dedicated migrations system would likely have been the chosen approach.
+# Phase 3 — Log
 
-If I use the continue / continue approach sometimes loose track. no created sprint status and I had to manually create, no created the stories
-
-All the changes and observation does not update the arch docs automatically, we need to force it
+Ongoing log. Use dated entries. Be concise.
 
 ---
 
-This AC was dropped during story creation — the story file only has 4 ACs instead of the 5 in the epics. That's a
-legitimate miss.
+## 1. Agent usage
 
-However, there's a practical question: is Postman MCP actually configured in this project? Let me check.
-
-Searched for 2 patterns, read 1 file (ctrl+o to expand)
-
-⏺ Postman MCP is configured in .mcp.json. So this is a valid gap — the tool is available but wasn't used.
-
-learn from it
-
-❯ learn from it
-
-⏺ You're right. This is exactly the kind of process failure that should be remembered. The AC was in the epics, got
-dropped during story creation, then the gap propagated through dev and review unchecked — three chances to catch it,
-all missed.
-
-Recalled 1 memory, wrote 2 memories (ctrl+o to expand)
-
-⏺ Saved. Three lessons encoded:
-
-1. create-story — count ACs against the epics source before proceeding; never collapse or omit
-2. code-review — load the epics file as a second source of truth, don't rely solely on the story file
-3. tool references — if an AC names a specific tool (Postman MCP, Playwright, etc.), verify it's available and use it
-
-This won't happen again.
-
-save in the repo memory
-
-Done. Created CLAUDE.md at the project root. This is automatically loaded by Claude Code at the start of every
-conversation in this repo, so the lesson will be applied to all future create-story, dev-story, and code-review runs —
-not just mine.
-
-Install matteo collina mr skill npx skills add mcollina/skills
-
-runner can't reach localhost:3001 — this is expected since it runs remotely. Let me add saved
-response examples to document the contract, then validate locally with curl instead.
-
-using newman
+- Tasks with AI:  story creation, impl, review
+- Issues: 
+  - Composer 2 fast can cause missing stories; sprint status not set automatically.
+  - Composer 2 fast: may duplicate stories if not stopped; may forget to mark tickets done.
 
 ---
 
-sometime we have a step in the epix that havr to be done by the qa and the dev alreay did
+## 2. MCP server usage
+- Used: tessl, playwright, postman, chrome-devtools, context7 
+- Actual use: No direct use of Postman/Playwright/DevTools MCP; E2E tests gave sufficient feedback after each task.
 
 ---
 
-composer 2 fast does not stop when creating stories, created 2 stories while i just asked for one
+## Limitations
+
+- Architecture changes require explicit/manual doc updates.
+- AC dropped between epics and story; fix: count ACs at create-story, reference epics at code-review, verify tool ACs and execute if possible.
+- Epic QA steps occasionally mismatched active dev work; note these.
+- Framework churn (e.g. `MutableRefObject` deprecation): track API changes and log agent mistakes vs. upstream breaks.
+
+- Human input needed for judgment, product/security, prioritization, AC completeness checks vs. epics.
 
 ---
 
-composer 2 . sometimes it forgets to mark the ticlet as done
+## Quick capture (unfiled)
 
-
+- Install mcollina/skills: `npx skills add mcollina/skills` (check current relevance)
