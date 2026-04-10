@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { TodoList } from '../../components/TodoList'
 
 const mockUseTodos = vi.fn()
+const mockRefetch = vi.fn()
 const mockToggleMutate = vi.fn()
 const mockDeleteMutate = vi.fn()
 
@@ -17,6 +18,17 @@ const mockTodos = [
   { id: 2, text: 'Second task', completed: true, createdAt: '2026-03-06T11:00:00Z' },
 ]
 
+function mockTodosState(overrides: Record<string, unknown> = {}) {
+  return {
+    todos: [] as typeof mockTodos,
+    isLoading: false,
+    isError: false,
+    isFetching: false,
+    refetch: mockRefetch,
+    ...overrides,
+  }
+}
+
 describe('TodoList', () => {
   beforeEach(() => {
     mockUseTodos.mockReset()
@@ -25,14 +37,14 @@ describe('TodoList', () => {
   })
 
   it('renders all todos in a list', () => {
-    mockUseTodos.mockReturnValue({ todos: mockTodos, isLoading: false, isError: false })
+    mockUseTodos.mockReturnValue(mockTodosState({ todos: mockTodos }))
     render(<TodoList />)
     expect(screen.getByText('First task')).toBeInTheDocument()
     expect(screen.getByText('Second task')).toBeInTheDocument()
   })
 
   it('renders todos in order (first created first in DOM)', () => {
-    mockUseTodos.mockReturnValue({ todos: mockTodos, isLoading: false, isError: false })
+    mockUseTodos.mockReturnValue(mockTodosState({ todos: mockTodos }))
     render(<TodoList />)
     const items = screen.getAllByRole('checkbox')
     expect(items).toHaveLength(2)
@@ -41,33 +53,48 @@ describe('TodoList', () => {
   })
 
   it('has role="list" and aria-label="Task list"', () => {
-    mockUseTodos.mockReturnValue({ todos: mockTodos, isLoading: false, isError: false })
+    mockUseTodos.mockReturnValue(mockTodosState({ todos: mockTodos }))
     render(<TodoList />)
     const list = screen.getByRole('list', { name: 'Task list' })
     expect(list).toBeInTheDocument()
   })
 
   it('renders LoadingState when loading', () => {
-    mockUseTodos.mockReturnValue({ todos: [], isLoading: true, isError: false })
+    mockUseTodos.mockReturnValue(mockTodosState({ isLoading: true }))
     render(<TodoList />)
     expect(screen.getByText('Loading...')).toBeInTheDocument()
   })
 
-  it('renders nothing on error', () => {
-    mockUseTodos.mockReturnValue({ todos: [], isLoading: false, isError: true })
-    const { container } = render(<TodoList />)
-    expect(container.innerHTML).toBe('')
+  it('renders ErrorState on error with retry', () => {
+    mockUseTodos.mockReturnValue(mockTodosState({ isError: true }))
+    render(<TodoList />)
+    expect(screen.getByText("Something's not right")).toBeInTheDocument()
+    expect(screen.getByText('Try again')).toBeInTheDocument()
+  })
+
+  it('calls refetch when "Try again" is clicked', () => {
+    mockUseTodos.mockReturnValue(mockTodosState({ isError: true }))
+    render(<TodoList />)
+    fireEvent.click(screen.getByText('Try again'))
+    expect(mockRefetch).toHaveBeenCalledTimes(1)
+  })
+
+  it('renders LoadingState while refetching after error (Try again)', () => {
+    mockUseTodos.mockReturnValue(mockTodosState({ isError: true, isFetching: true }))
+    render(<TodoList />)
+    expect(screen.getByText('Loading...')).toBeInTheDocument()
+    expect(screen.queryByText("Something's not right")).not.toBeInTheDocument()
   })
 
   it('renders EmptyState when todos array is empty', () => {
-    mockUseTodos.mockReturnValue({ todos: [], isLoading: false, isError: false })
+    mockUseTodos.mockReturnValue(mockTodosState())
     render(<TodoList />)
     expect(screen.getByText('Nothing here yet')).toBeInTheDocument()
     expect(screen.getByText('Type above and press Enter')).toBeInTheDocument()
   })
 
   it('calls toggle mutation when a todo is clicked', () => {
-    mockUseTodos.mockReturnValue({ todos: mockTodos, isLoading: false, isError: false })
+    mockUseTodos.mockReturnValue(mockTodosState({ todos: mockTodos }))
     render(<TodoList />)
     const items = screen.getAllByRole('checkbox')
 
@@ -80,7 +107,7 @@ describe('TodoList', () => {
   })
 
   it('calls delete mutation when × button is clicked', () => {
-    mockUseTodos.mockReturnValue({ todos: mockTodos, isLoading: false, isError: false })
+    mockUseTodos.mockReturnValue(mockTodosState({ todos: mockTodos }))
     render(<TodoList />)
     const deleteButton = screen.getByLabelText('Delete task: First task')
     fireEvent.click(deleteButton)
@@ -88,7 +115,7 @@ describe('TodoList', () => {
   })
 
   it('does not trigger toggle when × button is clicked', () => {
-    mockUseTodos.mockReturnValue({ todos: mockTodos, isLoading: false, isError: false })
+    mockUseTodos.mockReturnValue(mockTodosState({ todos: mockTodos }))
     render(<TodoList />)
     const deleteButton = screen.getByLabelText('Delete task: First task')
     fireEvent.click(deleteButton)

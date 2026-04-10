@@ -4,14 +4,14 @@ import { createTodo, deleteTodo, getTodos, toggleTodo } from '../api/todos'
 import type { Todo } from '../types'
 
 export function useTodos() {
-  const { data: todos = [], isLoading, isError } = useQuery({
+  const { data: todos = [], isLoading, isError, isFetching, refetch } = useQuery({
     queryKey: QUERY_KEYS.TODOS,
     queryFn: getTodos,
   })
-  return { todos, isLoading, isError }
+  return { todos, isLoading, isError, isFetching, refetch }
 }
 
-export function useCreateTodo() {
+export function useCreateTodo(onError?: (message: string) => void) {
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -38,6 +38,7 @@ export function useCreateTodo() {
       if (context?.previous) {
         queryClient.setQueryData(QUERY_KEYS.TODOS, context.previous)
       }
+      onError?.('Task not saved — try again')
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.TODOS })
@@ -45,23 +46,29 @@ export function useCreateTodo() {
   })
 }
 
-export function useToggleTodo() {
+export function useToggleTodo(onError?: (message: string) => void) {
   const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: ({ id, completed }: { id: number; completed: boolean }) =>
       toggleTodo(id, completed),
+    onError: () => {
+      onError?.('Update failed — try again')
+    },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.TODOS })
     },
   })
 }
 
-export function useDeleteTodo() {
+export function useDeleteTodo(onError?: (message: string) => void) {
   const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: (id: number) => deleteTodo(id),
+    onError: () => {
+      onError?.('Couldn\'t delete — try again')
+    },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.TODOS })
     },

@@ -3,6 +3,7 @@ import { renderHook, act, waitFor } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import type { ReactNode } from 'react'
 import { useCreateTodo, useDeleteTodo, useTodos, useToggleTodo } from '../../hooks/useTodos'
+import type { Todo } from '../../types'
 
 const mockCreateTodo = vi.fn()
 const mockDeleteTodo = vi.fn()
@@ -63,6 +64,41 @@ describe('useTodos', () => {
 
     await waitFor(() => {
       expect(result.current.isError).toBe(true)
+    })
+  })
+
+  it('isFetching is true while refetching after error', async () => {
+    mockGetTodos.mockRejectedValueOnce(new Error('Network error'))
+
+    const { result } = renderHook(() => useTodos(), { wrapper: createWrapper() })
+
+    await waitFor(() => {
+      expect(result.current.isError).toBe(true)
+    })
+
+    let resolveRefetch: (value: Todo[]) => void
+    mockGetTodos.mockImplementationOnce(
+      () =>
+        new Promise<Todo[]>((resolve) => {
+          resolveRefetch = resolve
+        }),
+    )
+
+    act(() => {
+      void result.current.refetch()
+    })
+
+    await waitFor(() => {
+      expect(result.current.isFetching).toBe(true)
+    })
+
+    await act(async () => {
+      resolveRefetch([])
+    })
+
+    await waitFor(() => {
+      expect(result.current.isFetching).toBe(false)
+      expect(result.current.isError).toBe(false)
     })
   })
 })
@@ -150,6 +186,33 @@ describe('useCreateTodo', () => {
       expect(cached).toEqual(originalTodos)
     })
   })
+
+  it('calls onError with user message when create fails', async () => {
+    const onError = vi.fn()
+    mockCreateTodo.mockRejectedValueOnce(new Error('Network error'))
+
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    })
+    queryClient.setQueryData(['todos'], [])
+
+    function Wrapper({ children }: { children: ReactNode }) {
+      return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    }
+
+    const { result } = renderHook(() => useCreateTodo(onError), { wrapper: Wrapper })
+
+    act(() => {
+      result.current.mutate('Will fail')
+    })
+
+    await waitFor(() => {
+      expect(result.current.isError).toBe(true)
+    })
+
+    expect(onError).toHaveBeenCalledTimes(1)
+    expect(onError).toHaveBeenCalledWith('Task not saved — try again')
+  })
 })
 
 describe('useToggleTodo', () => {
@@ -232,6 +295,34 @@ describe('useToggleTodo', () => {
       expect(state?.isInvalidated).toBe(true)
     })
   })
+
+  it('calls onError with user message when toggle fails', async () => {
+    const onError = vi.fn()
+    mockToggleTodo.mockRejectedValueOnce(new Error('Network error'))
+    mockGetTodos.mockResolvedValue([])
+
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    })
+    queryClient.setQueryData(['todos'], [{ id: 1, text: 'Test', completed: false, createdAt: '2026-03-07' }])
+
+    function Wrapper({ children }: { children: ReactNode }) {
+      return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    }
+
+    const { result } = renderHook(() => useToggleTodo(onError), { wrapper: Wrapper })
+
+    act(() => {
+      result.current.mutate({ id: 1, completed: true })
+    })
+
+    await waitFor(() => {
+      expect(result.current.isError).toBe(true)
+    })
+
+    expect(onError).toHaveBeenCalledTimes(1)
+    expect(onError).toHaveBeenCalledWith('Update failed — try again')
+  })
 })
 
 describe('useDeleteTodo', () => {
@@ -309,5 +400,33 @@ describe('useDeleteTodo', () => {
       const state = queryClient.getQueryState(['todos'])
       expect(state?.isInvalidated).toBe(true)
     })
+  })
+
+  it('calls onError with user message when delete fails', async () => {
+    const onError = vi.fn()
+    mockDeleteTodo.mockRejectedValueOnce(new Error('Network error'))
+    mockGetTodos.mockResolvedValue([])
+
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    })
+    queryClient.setQueryData(['todos'], [{ id: 1, text: 'Test', completed: false, createdAt: '2026-03-07' }])
+
+    function Wrapper({ children }: { children: ReactNode }) {
+      return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    }
+
+    const { result } = renderHook(() => useDeleteTodo(onError), { wrapper: Wrapper })
+
+    act(() => {
+      result.current.mutate(1)
+    })
+
+    await waitFor(() => {
+      expect(result.current.isError).toBe(true)
+    })
+
+    expect(onError).toHaveBeenCalledTimes(1)
+    expect(onError).toHaveBeenCalledWith('Couldn\'t delete — try again')
   })
 })

@@ -1,10 +1,14 @@
 import { useState, useRef, useEffect } from 'react'
 import { useCreateTodo } from '../hooks/useTodos'
 
-export function TodoInput() {
+interface TodoInputProps {
+  onError?: (message: string) => void
+}
+
+export function TodoInput({ onError }: TodoInputProps) {
   const [text, setText] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
-  const createTodo = useCreateTodo()
+  const createTodo = useCreateTodo(onError)
 
   useEffect(() => {
     inputRef.current?.focus()
