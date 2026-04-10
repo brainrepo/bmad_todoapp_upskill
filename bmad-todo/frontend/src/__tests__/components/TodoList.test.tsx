@@ -47,10 +47,10 @@ describe('TodoList', () => {
     expect(list).toBeInTheDocument()
   })
 
-  it('renders nothing when loading', () => {
+  it('renders LoadingState when loading', () => {
     mockUseTodos.mockReturnValue({ todos: [], isLoading: true, isError: false })
-    const { container } = render(<TodoList />)
-    expect(container.innerHTML).toBe('')
+    render(<TodoList />)
+    expect(screen.getByText('Loading...')).toBeInTheDocument()
   })
 
   it('renders nothing on error', () => {

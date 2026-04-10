@@ -1,5 +1,6 @@
 import { useDeleteTodo, useTodos, useToggleTodo } from '../hooks/useTodos'
 import { EmptyState } from './EmptyState'
+import { LoadingState } from './LoadingState'
 import { TodoItem } from './TodoItem'
 
 export function TodoList() {
@@ -7,7 +8,7 @@ export function TodoList() {
   const toggleTodo = useToggleTodo()
   const deleteTodo = useDeleteTodo()
 
-  if (isLoading) return null
+  if (isLoading) return <LoadingState />
   if (isError) return null
   if (todos.length === 0) return <EmptyState />
 
